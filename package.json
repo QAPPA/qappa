@@ -13,12 +13,12 @@
         "server:dev": "node_modules/.bin/nodemon",
         "server:build": "tsc",
         "server:start": "node server/dist/index.js"
-
     },
     "dependencies": {
         "element-ui": "^1.4.9",
         "express": "^4.16.3",
-        "nuxt": "^1.0.0"
+        "nuxt": "^1.4.1",
+        "vue": "^2.5.16"
     },
     "devDependencies": {
         "@types/express": "^4.16.0",
