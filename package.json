@@ -1,0 +1,25 @@
+{
+    "name": "qappa",
+    "version": "1.0.0",
+    "description": "Quality Agile Project Planning Application",
+    "author": "Vladimír Fojtík",
+    "private": true,
+    "scripts": {
+        "client:dev": "nuxt",
+        "client:build": "nuxt build",
+        "client:start": "nuxt start",
+        "client:generate": "nuxt generate",
+        "client:lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+    },
+    "dependencies": {
+        "nuxt": "^1.0.0",
+        "element-ui": "^1.4.9"
+    },
+    "devDependencies": {
+        "cross-env": "^5.0.1",
+        "babel-eslint": "^8.2.1",
+        "eslint": "^4.15.0",
+        "eslint-loader": "^1.7.1",
+        "eslint-plugin-vue": "^4.0.0"
+    }
+}
