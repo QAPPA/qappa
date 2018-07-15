@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser';
-import router from './routes';
+import { setControllers } from './controllers';
 import * as express from 'express';
-import loadDotEnv from './config';
+import { loadDotEnv } from './config';
 
 loadDotEnv(`${process.cwd()}/server/.env`);
 const app: express.Application = express();
@@ -11,6 +11,6 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.set('port', process.env.PORT || 3001);
-router(app);
+setControllers(app);
 
 export default app;

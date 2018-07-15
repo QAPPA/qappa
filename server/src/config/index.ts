@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
 
-export default (envPath: string) => {
+export const loadDotEnv = (envPath: string) => {
     dotenv.config({ path: envPath });
 };
