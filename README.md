@@ -2,19 +2,23 @@
 
 > Quality Agile Project Planning Application
 
-## Build Setup
+## Basic Setup
 
 ``` bash
 # install dependencies
 $ yarn
 
-# serve with hot reload at localhost:3000
-$ yarn dev
+# serve client
+$ yarn client:dev
 
-# build for production and launch server
-$ yarn build
-$ yarn start
+#serve server
+$ yarn server:dev
 
-# generate static project
-$ yarn generate
+# build client for production and launch client app
+$ yarn client:build
+$ yarn client:start
+
+# transpile server files and launch it
+$ yarn server:build
+$ yarn server:start
 ```
