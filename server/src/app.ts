@@ -1,5 +1,5 @@
 import * as bodyParser from 'body-parser';
-import router from './controllers';
+import router from './routes';
 import * as express from 'express';
 import loadDotEnv from './config';
 

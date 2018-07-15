@@ -20,7 +20,8 @@
         "import-name": [
             true,
             {
-                "controllers": "router"
+                "routes": "router",
+                "config": "loadDotEnv"
             }
         ]
     }
