@@ -2,10 +2,11 @@
     "compilerOptions": {
         "target": "ES2017",
         "module": "commonjs",
-        "strict": true,
         "moduleResolution": "node",
         "outDir": "server/dist",
-        "sourceMap": true
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
     },
     "include": [
         "server/src/**/*.ts"
