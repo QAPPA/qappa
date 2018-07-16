@@ -9,8 +9,7 @@ module.exports = {
     "migrationsTableName": "custom_migration_table",
     "migrations": ["server/src/migrations/*.ts"],
     "cli": {
-        "entitiesDir": "entities",
-        "migrationsDir": "migrations"
-    },
-    synchronize: true
+        "entitiesDir": "server/src/entities",
+        "migrationsDir": "server/src/migrations"
+    }
 }

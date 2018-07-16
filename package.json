@@ -11,7 +11,8 @@
         "client:generate": "nuxt generate",
         "client:lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
         "server:dev": "node_modules/.bin/nodemon",
-        "server:start": "ts-node server/src/index.ts"
+        "server:start": "ts-node server/src/index.ts",
+        "to": "node tsnode-typeorm"
     },
     "dependencies": {
         "dotenv": "^6.0.0",
