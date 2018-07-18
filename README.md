@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/365a5d3c88e7642a5e39/maintainability)](https://codeclimate.com/github/QAPPA/qappa/maintainability)
+
 # QAPPA
 
 > Quality Agile Project Planning Application
