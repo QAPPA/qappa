@@ -19,6 +19,7 @@
         "@types/passport": "^0.4.5",
         "@types/passport-jwt": "^3.0.1",
         "bcrypt": "^3.0.0",
+        "config": "^1.30.0",
         "dotenv": "^6.0.0",
         "element-ui": "^1.4.9",
         "express": "^4.16.3",

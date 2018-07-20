@@ -1,0 +1,11 @@
+{
+    "dbConfig": {
+        "dialect": "mysql",
+        "host": "localhost",
+        "port": 3306,
+        "name": "qappa",
+        "user": "root",
+        "password": ""
+    },
+    "jwtSecret": "mySuperSecret"
+}
