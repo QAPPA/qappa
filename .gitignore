@@ -20,5 +20,4 @@ yarn.lock
 /.idea
 
 #config file
-server/.env
 config/local-development.json
