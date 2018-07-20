@@ -5,5 +5,8 @@ node_js:
   - "10"
 install:
   - npm install
+before_script:
+  - npm run client:build
 script:
   - npm run test
+  - npm run server:start
