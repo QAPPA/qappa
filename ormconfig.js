@@ -12,4 +12,4 @@ module.exports = {
         "entitiesDir": "server/src/entities",
         "migrationsDir": "server/src/migrations"
     }
-}
+};
