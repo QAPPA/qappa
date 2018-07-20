@@ -6,9 +6,7 @@
         "outDir": "server/dist",
         "sourceMap": true,
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "lib": ["es2015"],
-        "types": ["reflect-metadata"],
+        "experimentalDecorators": true
     },
     "include": [
         "server/src/**/*.ts"
