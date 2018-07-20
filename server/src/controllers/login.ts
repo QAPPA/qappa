@@ -7,16 +7,18 @@ import * as config from 'config';
 import { User } from '../entities/User';
 
 export default async (req: Request, res: Response) => {
-    console.log('Login request body:', req.body);
-    // assume correct body now
+    // TODO: replace with some robust validation - Joi?
+    if (!req.body.email || !req.body.password) {
+        return res.sendStatus(400);
+    }
     const repository = getRepository(User);
     const user = await repository.findOne({ email: req.body.email });
     if (!user) {
-        return res.status(401);
+        return res.status(400).send('Invalid email or password');
     }
     const valid = await bcrypt.compare(req.body.password, user.password);
     if (!valid) {
-        return res.status(401);
+        return res.status(400).send('Invalid email or password');
     }
     const token = jwt.sign(_.pick(user, ['id', 'admin']), config.get('jwtSecret'));
     res.status(200).send(token);

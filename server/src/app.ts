@@ -2,7 +2,7 @@ import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as config from 'config';
 import router from './controllers';
-import { initializePassport } from './config/auth';
+import { initializePassport } from './middleware/auth';
 
 const app: express.Application = express();
 app.set('port', config.get('port') || 3001);
