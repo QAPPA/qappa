@@ -1,9 +1,7 @@
-import { loadDotEnv } from './config';
 import 'reflect-metadata';
-import app from './app';
 import { createConnection } from 'typeorm';
+import app from './app';
 
-loadDotEnv(`${process.cwd()}/server/.env`);
 createConnection()
     .then(() => {
         console.log('Database connected');

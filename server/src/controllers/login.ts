@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import * as _ from 'lodash';
+import * as config from 'config';
 import { User } from '../entities/User';
 
 export default async (req: Request, res: Response) => {
@@ -17,6 +18,6 @@ export default async (req: Request, res: Response) => {
     if (!valid) {
         return res.status(401);
     }
-    const token = jwt.sign(_.pick(user, ['id', 'admin']), process.env.JWT_SECRET);
+    const token = jwt.sign(_.pick(user, ['id', 'admin']), config.get('jwtSecret'));
     res.status(200).send(token);
 };

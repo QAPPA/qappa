@@ -1,14 +1,12 @@
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Handler } from 'express';
 import * as passport from 'passport';
+import * as config from 'config';
 
-console.log(`auth.ts, JWT_SECRET = ${process.env.JWT_SECRET}`);
-const strategy: Strategy = new Strategy({
+const strategy = new Strategy({
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET
+    secretOrKey: config.get('jwtSecret')
 }, (jwtPayload, callback) => {
-    console.log('Inside Passport strategy, jwtPayload:', jwtPayload);
-    // pass along user ID and status
     callback(null, {
         id: jwtPayload.id,
         admin: jwtPayload.admin

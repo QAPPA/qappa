@@ -1,4 +1,5 @@
 {
+    "port": "PORT",
     "dbConfig": {
         "dialect": "DB_DIALECT",
         "host": "DB_HOST",
