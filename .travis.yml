@@ -5,6 +5,7 @@ node_js:
 install:
   - npm install
 before_script:
+  - npm run to migration:run
   - npm run client:build
 script:
   - npm run test
