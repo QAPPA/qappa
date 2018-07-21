@@ -6,7 +6,7 @@ import { User } from '../entities/User';
 import { authenticate } from '../middleware/auth';
 const router = Router();
 
-router.get('/', authenticate(), async (req: Request, res: Response) => {
+router.get('/', authenticate, async (req: Request, res: Response) => {
     res.status(200).send('Sending all users');
 });
 

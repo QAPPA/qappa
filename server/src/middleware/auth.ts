@@ -18,6 +18,6 @@ export function initializePassport(): Handler {
     return passport.initialize();
 }
 
-export function authenticate(): any {
-    return passport.authenticate('jwt', { session: false });
+export function authenticate(req: Request, res: Response, next: Function): any {
+    passport.authenticate('jwt', { session: false })(req, res, next);
 }

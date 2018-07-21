@@ -9,7 +9,7 @@ export default (app: Application) => {
     // POST /users
     app.use('/login', authenticationController);
     app.use('/users', usersController);
-    app.get('/protected', authenticate(), (req: Request, res: Response) => {
+    app.get('/protected', authenticate, (req: Request, res: Response) => {
         console.log('Inside protected');
         return res.sendStatus(200);
     });
