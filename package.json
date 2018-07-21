@@ -12,6 +12,7 @@
         "client:lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
         "server:dev": "node_modules/.bin/nodemon",
         "server:start": "ts-node server/src/index.ts",
+        "server:lint": "node_modules/.bin/tslint --project tsconfig.json --exclude server/src/migrations/*.ts",
         "to": "node tsnode-typeorm"
     },
     "dependencies": {

@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - "8"
+  - "9"
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE qappa;'
+install:
+  - npm install
+before_script:
+  - npm run server:lint
+  - npm run client:lint
+  - npm run to migration:run
+  - npm run client:build
+script:
+  - npm run test

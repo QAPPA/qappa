@@ -20,7 +20,8 @@
         "import-name": [
             true,
             {
-                "server": "Server"
+                "server": "Server",
+                "controllers": "router"
             }
         ]
     }
