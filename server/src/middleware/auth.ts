@@ -1,5 +1,5 @@
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Handler } from 'express';
+import { Request, Response, Handler, NextFunction } from 'express';
 import * as passport from 'passport';
 import * as config from 'config';
 
@@ -18,6 +18,6 @@ export function initializePassport(): Handler {
     return passport.initialize();
 }
 
-export function authenticate(req: Request, res: Response, next: Function): any {
+export function authenticate(req: Request, res: Response, next: NextFunction): any {
     passport.authenticate('jwt', { session: false })(req, res, next);
 }
