@@ -9,6 +9,8 @@ before_install:
 install:
   - npm install
 before_script:
+  - npm run server:lint
+  - npm run client:lint
   - npm run to migration:run
   - npm run client:build
 script:
