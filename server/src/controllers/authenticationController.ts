@@ -4,12 +4,12 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import * as _ from 'lodash';
 import * as config from 'config';
-import { User } from '../entities/User';
+import { User, validate } from '../entities/User';
 const router = Router();
 
-router.post('/login', async (req: Request, res: Response) => {
-    // TODO: replace with some robust validation - Joi?
-    if (!req.body.email || !req.body.password) {
+router.post('/', async (req: Request, res: Response) => {
+    const { error } = validate(req.body);
+    if (error) {
         return res.sendStatus(400);
     }
     const repository = getRepository(User);
