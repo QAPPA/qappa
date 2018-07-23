@@ -16,6 +16,7 @@
         "to": "node tsnode-typeorm"
     },
     "dependencies": {
+        "@types/joi": "^13.4.0",
         "@types/lodash": "^4.14.112",
         "@types/passport": "^0.4.5",
         "@types/passport-jwt": "^3.0.1",

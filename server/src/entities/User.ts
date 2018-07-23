@@ -19,7 +19,7 @@ export class User {
     admin: boolean;
 }
 
-export const validate = (user) => {
+export const validate = (user: any): Joi.ValidationResult<any> => {
     // TODO: Temporarily serves both as login and register validator
     // in the future register should have separate validator
     const schema = {
