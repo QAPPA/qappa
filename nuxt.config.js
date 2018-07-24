@@ -8,7 +8,7 @@ module.exports = {
      ** Headers of the page
      */
     head: {
-        title: pkg.name,
+        titleTemplate: '%s | QAPPA',
         meta: [
             {
             charset: 'utf-8'
@@ -43,7 +43,8 @@ module.exports = {
      ** Global CSS
      */
     css: [
-        'element-ui/lib/theme-default/index.css'
+        'element-ui/lib/theme-chalk/index.css',
+        '@/assets/css/main.sass'
     ],
 
     /*
