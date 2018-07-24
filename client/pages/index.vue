@@ -14,7 +14,7 @@
         data() {
             return {
                 title: 'Dashboard'
-            }
+            };
         }
     };
 </script>
