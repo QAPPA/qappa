@@ -4,7 +4,9 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import * as _ from 'lodash';
 import * as config from 'config';
-import { User, validate } from '../entities/User';
+import { User } from '../entities/User';
+import { validate } from '../utils/validations/user';
+
 const router = Router();
 
 router.post('/', async (req: Request, res: Response) => {

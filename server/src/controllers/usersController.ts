@@ -2,7 +2,8 @@ import { Request, Response, Router } from 'express';
 import { getRepository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as _ from 'lodash';
-import { User, validate } from '../entities/User';
+import { User } from '../entities/User';
+import { validate } from '../utils/validations/user';
 import { authenticate } from '../middleware/auth';
 const router = Router();
 
