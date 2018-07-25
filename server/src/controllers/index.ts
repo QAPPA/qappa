@@ -5,9 +5,9 @@ import { authenticate } from '../middleware/auth';
 
 export default (app: Application) => {
     // unprotected endpoints:
-    // POST /login
+    // POST /auth/login
     // POST /users
-    app.use('/login', authenticationController);
+    app.use('/auth', authenticationController);
     app.use('/users', usersController);
     app.get('/protected', authenticate, (req: Request, res: Response) => {
         console.log('Inside protected');

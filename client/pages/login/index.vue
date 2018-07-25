@@ -42,6 +42,7 @@
             };
         },
         layout: 'auth',
+        auth: false,
         data() {
             return {
                 form: {
@@ -52,8 +53,14 @@
             };
         },
         methods: {
-            onSubmit() {
-                console.log('submit!');
+            async onSubmit() {
+                return this.$auth.loginWith('local', {
+                    data: {
+                        email: this.form.email,
+                        password: this.form.password
+                    }
+                })
+                .catch((error) => console.log(error));
             }
         }
     };

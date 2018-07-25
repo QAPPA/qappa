@@ -9,10 +9,10 @@ import { validate } from '../utils/validations/user';
 
 const router = Router();
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response) => {
     const { error } = validate(req.body);
     if (error) {
-        return res.sendStatus(400);
+        return res.status(400).send('Validation error');
     }
     const repository = getRepository(User);
     const user = await repository.findOne({ email: req.body.email });
@@ -24,7 +24,11 @@ router.post('/', async (req: Request, res: Response) => {
         return res.status(400).send('Invalid email or password');
     }
     const token = jwt.sign(_.pick(user, ['id', 'admin']), config.get('jwtSecret'));
-    res.status(200).send(token);
+    res.status(200).send({ token });
+});
+
+router.post('/logout', async (req: Request, res: Response) => {
+    res.status(500).send({ message: 'Not implemented yet' });
 });
 
 export default router;

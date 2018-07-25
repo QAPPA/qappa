@@ -57,7 +57,45 @@ module.exports = {
     /*
      ** Nuxt.js modules
      */
-    modules: [],
+    modules: [
+        '@nuxtjs/axios',
+        '@nuxtjs/auth'
+    ],
+
+    /*
+    ** Router configuration
+     */
+    router: {
+        middleware: ['auth']
+    },
+
+    /*
+    ** axios configuration
+     */
+    axios: {
+        baseURL: 'http://localhost:3001'
+    },
+
+    /*
+    ** Auth configuration
+     */
+    auth: {
+        strategies: {
+            local: {
+                endpoints: {
+                    login: { url: '/auth/login', method: 'post', propertyName: 'token' },
+                    logout: { url: '/auth/logout', method: 'post' },
+                    user: { url: '/users/me', method: 'get', propertyName: 'email' }
+                }
+            }
+        },
+        redirect: {
+            login: '/login',
+            logout: '/',
+            callback: '/',
+            user: '/user'
+        }
+    },
 
     /*
      ** Build configuration
