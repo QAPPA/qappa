@@ -52,8 +52,22 @@
             };
         },
         methods: {
-            onSubmit() {
-                console.log('submit!');
+            async onSubmit() {
+                return this.$auth.loginWith('local', {
+                    data: {
+                        email: this.form.email,
+                        password: this.form.password
+                    }
+                })
+                .then(() => {
+                    this.$notify({
+                        title: 'Success',
+                        message: 'You have been successfully logged into system.',
+                        type: 'success',
+                        position: 'bottom-right'
+                    });
+                })
+                .catch((error) => console.log(error));
             }
         }
     };

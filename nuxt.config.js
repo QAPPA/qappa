@@ -1,4 +1,5 @@
 const pkg = require('./package');
+const config = require('config');
 
 module.exports = {
     mode: 'universal',
@@ -57,7 +58,47 @@ module.exports = {
     /*
      ** Nuxt.js modules
      */
-    modules: [],
+    modules: [
+        '@nuxtjs/axios',
+        '@nuxtjs/auth'
+    ],
+
+    /*
+    ** Router configuration
+     */
+    router: {
+        middleware: ['auth']
+    },
+
+    /*
+    ** axios configuration
+     */
+    axios: {
+        baseURL: `http://${config.get('host')}:${config.get('port')}`
+    },
+
+    /*
+    ** Auth configuration
+     */
+    auth: {
+        strategies: {
+            local: {
+                endpoints: {
+                    login: { url: '/auth/login', method: 'post', propertyName: 'token' },
+                    logout: { url: '/auth/logout', method: 'post' },
+                    user: { url: '/users/me', method: 'get', propertyName: 'email' }
+                }
+            }
+        },
+        redirect: {
+            login: '/login',
+            logout: '/login',
+            home: '/'
+        },
+        watchLoggedIn: true,
+        rewriteRedirects: false,
+        resetOnError: true
+    },
 
     /*
      ** Build configuration
