@@ -6,6 +6,7 @@ services:
   - mysql
 before_install:
   - mysql -e 'CREATE DATABASE qappa;'
+  - mysql -e 'CREATE DATABASE qappa_test;'
 install:
   - npm install
 before_script:
