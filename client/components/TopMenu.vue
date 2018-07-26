@@ -9,7 +9,11 @@
             @select="handleSelect">
             <el-menu-item index="1">Home</el-menu-item>
             <div class="menu-text">
-                <p class="menu-user"><strong>Logged user:</strong> {{ user }}</p>
+                <p class="menu-user">
+                    <strong>Logged user:</strong> {{ user }} (<a
+                        href="#"
+                        @click="handleLogout">Log out</a>)
+                </p>
             </div>
         </el-menu>
         <div class="line"></div>
@@ -31,6 +35,9 @@
         methods: {
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
+            },
+            async handleLogout() {
+                await this.$auth.logout();
             }
         }
     };
