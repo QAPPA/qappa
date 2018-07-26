@@ -1,5 +1,5 @@
 import { agent, SuperTest, Test } from 'supertest';
-import { getRepository } from 'typeorm';
+import { getRepository, createConnection, Connection } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import app from '../../src/app';
 import { User } from '../../src/entities/User';
@@ -7,20 +7,35 @@ import { User } from '../../src/entities/User';
 const request: SuperTest<Test> = agent(app);
 
 describe('POST /login', () => {
+    let connection: Connection;
+
     beforeAll(async () => {
-        const repository = getRepository(User);
-        const user = new User();
-        user.email = 'test@qappa.net';
-        user.admin = true;
-        user.password = await bcrypt.hash('password', 10);
-        await repository.save(user);
+        try {
+            connection = await createConnection();
+            const repository = getRepository(User);
+            const user = new User();
+            user.email = 'test@qappa.net';
+            user.admin = true;
+            user.password = await bcrypt.hash('password', 10);
+            await repository.save(user);
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error while connecting to database');
+        }
     });
 
     afterAll(async () => {
-        const repository = getRepository(User);
-        await repository.delete({
-            email: 'test@qappa.net'
-        });
+        try {
+            const repository = getRepository(User);
+            await repository.delete({
+                email: 'test@qappa.net'
+            });
+            await connection.dropDatabase();
+            await connection.close();
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error while disconnecting from database');
+        }
     });
 
     it('should respond with status 400 if invalid body was supplied', () => {
