@@ -1,8 +1,8 @@
 import { agent, SuperTest, Test } from 'supertest';
 import { getRepository, createConnection, Connection } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import app from '../../src/app';
-import { User } from '../../src/entities/User';
+import app from '@server/app';
+import { User } from '@server/entities/User';
 
 const request: SuperTest<Test> = agent(app);
 

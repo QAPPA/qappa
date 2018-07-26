@@ -1,4 +1,4 @@
-import { validate } from '../../../src/utils/validations/user';
+import { validate } from '@server/utils/validations/user';
 
 describe('Joi User validation', () => {
     let email;

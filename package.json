@@ -71,6 +71,9 @@
             "<rootDir>/node_modules/",
             "<rootDir>/server/dist/"
         ],
+        "moduleNameMapper": {
+            "^@server/(.*)$": "<rootDir>/server/src/$1"
+        },
         "moduleFileExtensions": [
             "ts",
             "tsx",
