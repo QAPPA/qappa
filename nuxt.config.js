@@ -91,10 +91,12 @@ module.exports = {
         },
         redirect: {
             login: '/login',
-            logout: '/',
-            callback: '/',
-            user: '/user'
-        }
+            logout: '/login',
+            home: '/'
+        },
+        watchLoggedIn: true,
+        rewriteRedirects: false,
+        resetOnError: true
     },
 
     /*

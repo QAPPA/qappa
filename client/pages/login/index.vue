@@ -42,7 +42,6 @@
             };
         },
         layout: 'auth',
-        auth: false,
         data() {
             return {
                 form: {
