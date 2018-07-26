@@ -59,6 +59,13 @@
                         password: this.form.password
                     }
                 })
+                .then(() => {
+                    this.$notify({
+                        title: 'Success',
+                        message: 'You have been successfully logged into system.',
+                        type: 'success'
+                    });
+                })
                 .catch((error) => console.log(error));
             }
         }
