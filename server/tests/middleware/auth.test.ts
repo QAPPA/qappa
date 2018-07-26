@@ -70,8 +70,64 @@ describe('auth middleware', () => {
         expect(res.statusCode).toBe(401);
     });
 
-    it('should forward the request if correct JWT token is supplied', () => {
-        const token = jwt.sign({}, config.get('jwtSecret'));
+    describe('should respond with 401 if JWT token has invalid payload', () => {
+        it('empty object', () => {
+            const token = jwt.sign({}, config.get('jwtSecret'));
+            const req = {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            };
+            const res = {
+                end: jest.fn(),
+                statusCode: undefined
+            };
+            const next = jest.fn();
+            // @ts-ignore
+            authenticate(req, res, next);
+            expect(next).not.toHaveBeenCalled();
+            expect(res.statusCode).toBe(401);
+        });
+
+        it('only id', () => {
+            const token = jwt.sign({ id: 1 }, config.get('jwtSecret'));
+            const req = {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            };
+            const res = {
+                end: jest.fn(),
+                statusCode: undefined
+            };
+            const next = jest.fn();
+            // @ts-ignore
+            authenticate(req, res, next);
+            expect(next).not.toHaveBeenCalled();
+            expect(res.statusCode).toBe(401);
+        });
+
+        it('only admin', () => {
+            const token = jwt.sign({ admin: true }, config.get('jwtSecret'));
+            const req = {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            };
+            const res = {
+                end: jest.fn(),
+                statusCode: undefined
+            };
+            const next = jest.fn();
+            // @ts-ignore
+            authenticate(req, res, next);
+            expect(next).not.toHaveBeenCalled();
+            expect(res.statusCode).toBe(401);
+        });
+    });
+
+    it('should forward the request if JWT token is correct', () => {
+        const token = jwt.sign({ id: 1, admin: true }, config.get('jwtSecret'));
         const req = {
             headers: {
                 authorization: `Bearer ${token}`
