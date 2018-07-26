@@ -18,8 +18,11 @@
         "to": "node tsnode-typeorm"
     },
     "dependencies": {
+        "@nuxtjs/auth": "^4.5.1",
+        "@nuxtjs/axios": "^5.3.1",
         "bcrypt": "^3.0.0",
         "config": "^1.30.0",
+        "cors": "^2.8.4",
         "element-ui": "^2.4.4",
         "express": "^4.16.3",
         "jest": "^23.4.1",
@@ -37,6 +40,7 @@
         "vue": "^2.5.16"
     },
     "devDependencies": {
+        "@types/cors": "^2.8.4",
         "@types/express": "^4.16.0",
         "@types/jest": "^23.3.0",
         "@types/joi": "^13.4.0",
