@@ -63,7 +63,8 @@
                     this.$notify({
                         title: 'Success',
                         message: 'You have been successfully logged into system.',
-                        type: 'success'
+                        type: 'success',
+                        position: 'bottom-right'
                     });
                 })
                 .catch((error) => console.log(error));
