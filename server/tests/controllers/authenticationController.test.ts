@@ -26,10 +26,6 @@ describe('POST /login', () => {
 
     afterAll(async () => {
         try {
-            const repository = getRepository(User);
-            await repository.delete({
-                email: 'test@qappa.net'
-            });
             await connection.dropDatabase();
             await connection.close();
         } catch (error) {
