@@ -1,4 +1,5 @@
 const pkg = require('./package');
+const config = require('config');
 
 module.exports = {
     mode: 'universal',
@@ -73,7 +74,7 @@ module.exports = {
     ** axios configuration
      */
     axios: {
-        baseURL: 'http://localhost:3001'
+        baseURL: `http://${config.get('host')}:${config.get('port')}`
     },
 
     /*
