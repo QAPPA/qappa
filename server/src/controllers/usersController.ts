@@ -30,9 +30,6 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 router.get('/me', authenticate, async (req: Request, res: Response) => {
-    if (!req.user.id) {
-        return res.status(400).send({ message: 'Authentication failed' });
-    }
     const userRepository = getRepository(User);
     const user = await userRepository.findOne({ id: req.user.id });
     if (!user) {

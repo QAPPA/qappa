@@ -16,7 +16,7 @@ describe('GET /users', () => {
     });
 
     it('should respond with status 200 for valid request', async () => {
-        const token = jwt.sign({}, config.get('jwtSecret'));
+        const token = jwt.sign({ id: 1, admin: true }, config.get('jwtSecret'));
         const response: Response = await request
             .get('/users')
             .set('Authorization', `Bearer ${token}`);
@@ -114,17 +114,8 @@ describe('GET /users/me', () => {
         expect(response.status).toBe(401);
     });
 
-    it('should respond with status 400 if request is authenticated with wrong payload', async () => {
-        const token = jwt.sign({}, config.get('jwtSecret'));
-        const response: Response = await request
-            .get('/users/me')
-            .set('Authorization', `Bearer ${token}`);
-        expect(response.status).toBe(400);
-        expect(response.body.message).toMatch(/Authentication failed/);
-    });
-
     it('should respond with status 400 if request user doesn\'t exist', async () => {
-        const token = jwt.sign({ id: -1 }, config.get('jwtSecret'));
+        const token = jwt.sign({ id: -1, admin: true }, config.get('jwtSecret'));
         const response: Response = await request
             .get('/users/me')
             .set('Authorization', `Bearer ${token}`);
