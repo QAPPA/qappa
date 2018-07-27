@@ -43,7 +43,7 @@ describe('POST /auth/login', () => {
             .post('/auth/login')
             .send({
                 email: 'this is not a valid email',
-                password: 0
+                password: ''
             });
         expect(response.status).toBe(400);
         expect(response.text).toMatch(/Validation error/);
