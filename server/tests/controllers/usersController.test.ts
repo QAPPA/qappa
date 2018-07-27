@@ -115,7 +115,7 @@ describe('GET /users/me', () => {
     });
 
     it('should respond with status 400 if request user doesn\'t exist', async () => {
-        const token = jwt.sign({ id: -1, admin: true }, config.get('jwtSecret'));
+        const token = jwt.sign({ id: 1, admin: true }, config.get('jwtSecret'));
         const response: Response = await request
             .get('/users/me')
             .set('Authorization', `Bearer ${token}`);
@@ -142,5 +142,7 @@ describe('GET /users/me', () => {
             email: savedUser.email,
             admin: savedUser.admin
         });
+
+        await repository.delete({ id: savedUser.id });
     });
 });
