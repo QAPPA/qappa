@@ -7,6 +7,7 @@ module.exports = {
     "username": config.get('dbConfig.user') || "root",
     "password": config.get('dbConfig.password') || "",
     "database": config.get('dbConfig.name') || "qappa",
+    "synchronize": config.get('dbConfig.synchronize'),
     "entities": ["server/src/entities/*.ts"],
     "migrationsTableName": "custom_migration_table",
     "migrations": ["server/src/migrations/*.ts"],

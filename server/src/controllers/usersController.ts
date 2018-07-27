@@ -8,13 +8,13 @@ import { authenticate } from '../middleware/auth';
 const router = Router();
 
 router.get('/', authenticate, async (req: Request, res: Response) => {
-    res.status(200).send('Sending all users');
+    res.status(200).send({ message: 'Sending all users' });
 });
 
 router.post('/', async (req: Request, res: Response) => {
     const { error } = validate(req.body);
     if (error) {
-        return res.status(400).send('Email and password must be supplied');
+        return res.status(400).send({ message: 'Email and password must be supplied' });
     }
     const userRepository = getRepository(User);
     const user = new User();
@@ -30,11 +30,11 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 router.get('/me', authenticate, async (req: Request, res: Response) => {
-    if (!req.user) {
-        return res.status(500).send({ message: 'Authentication failed' });
-    }
     const userRepository = getRepository(User);
     const user = await userRepository.findOne({ id: req.user.id });
+    if (!user) {
+        return res.status(400).send({ message: 'Authentication failed' });
+    }
     return res.status(200).send(_.pick(user, ['id', 'email', 'admin']));
 });
 

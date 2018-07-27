@@ -6,7 +6,11 @@
         "outDir": "server/dist",
         "sourceMap": true,
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "baseUrl": ".",
+        "paths": {
+            "@server/*": ["server/src/*"]
+        }
     },
     "include": [
         "server/src/**/*.ts"

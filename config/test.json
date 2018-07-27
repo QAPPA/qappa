@@ -1,0 +1,6 @@
+{
+    "dbConfig": {
+        "name": "qappa_test",
+        "synchronize": true
+    }
+}

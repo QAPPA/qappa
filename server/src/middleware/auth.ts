@@ -7,6 +7,9 @@ const strategy = new Strategy({
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: config.get('jwtSecret')
 }, (jwtPayload, callback) => {
+    if (jwtPayload.id === undefined || jwtPayload.admin === undefined) {
+        return callback(null, false);
+    }
     callback(null, {
         id: jwtPayload.id,
         admin: jwtPayload.admin
