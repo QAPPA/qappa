@@ -13,7 +13,7 @@
         "server:dev": "node_modules/.bin/nodemon",
         "server:start": "ts-node server/src/index.ts",
         "server:lint": "node_modules/.bin/tslint --project tsconfig.json --exclude server/src/migrations/*.ts",
-        "test": "jest",
+        "test": "jest --runInBand",
         "test:watch": "jest --watchAll",
         "to": "node tsnode-typeorm"
     },
