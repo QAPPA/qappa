@@ -46,7 +46,7 @@ describe('POST /auth/login', () => {
                 password: ''
             });
         expect(response.status).toBe(400);
-        expect(response.text).toMatch(/Validation error/);
+        expect(response.body.message).toMatch(/Validation error/);
     });
 
     it('should respond with status 400 if user was not found', async () => {
@@ -57,7 +57,7 @@ describe('POST /auth/login', () => {
                 password: 'password'
             });
         expect(response.status).toBe(400);
-        expect(response.text).toMatch(/Invalid email or password/);
+        expect(response.body.message).toMatch(/Invalid email or password/);
     });
 
     it('should respond with status 400 if user password doesn\'t match', async () => {
@@ -68,7 +68,7 @@ describe('POST /auth/login', () => {
                 password: 'wrongPassword'
             });
         expect(response.status).toBe(400);
-        expect(response.text).toMatch(/Invalid email or password/);
+        expect(response.body.message).toMatch(/Invalid email or password/);
     });
 
     it('should respond with status 200 if login is successful', async () => {

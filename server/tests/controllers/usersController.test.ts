@@ -21,7 +21,7 @@ describe('GET /users', () => {
             .get('/users')
             .set('Authorization', `Bearer ${token}`);
         expect(response.status).toBe(200);
-        expect(response.text).toMatch(/Sending all users/);
+        expect(response.body.message).toMatch(/Sending all users/);
     });
 });
 
@@ -51,7 +51,7 @@ describe('POST /users', () => {
         // validate() has already been tested
         const response: Response = await request.post('/users').send({});
         expect(response.status).toBe(400);
-        expect(response.text).toMatch(/Email and password must be supplied/);
+        expect(response.body.message).toMatch(/Email and password must be supplied/);
     });
 
     it('should save new user to DB if request is valid', async () => {

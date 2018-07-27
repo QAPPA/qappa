@@ -8,13 +8,13 @@ import { authenticate } from '../middleware/auth';
 const router = Router();
 
 router.get('/', authenticate, async (req: Request, res: Response) => {
-    res.status(200).send('Sending all users');
+    res.status(200).send({ message: 'Sending all users' });
 });
 
 router.post('/', async (req: Request, res: Response) => {
     const { error } = validate(req.body);
     if (error) {
-        return res.status(400).send('Email and password must be supplied');
+        return res.status(400).send({ message: 'Email and password must be supplied' });
     }
     const userRepository = getRepository(User);
     const user = new User();
