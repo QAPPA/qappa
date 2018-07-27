@@ -67,6 +67,7 @@
             "^.+\\.tsx?$": "ts-jest"
         },
         "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "testEnvironment": "node",
         "testPathIgnorePatterns": [
             "<rootDir>/node_modules/",
             "<rootDir>/server/dist/"
