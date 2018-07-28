@@ -4,6 +4,11 @@
 
 > Quality Agile Project Planning Application
 
+## API Reference
+
+- [Master branch](http://qappa.docs.apiary.io)
+- [Dev branch](http://qappadev.docs.apiary.io)
+
 ## Basic Setup
 
 ``` bash
