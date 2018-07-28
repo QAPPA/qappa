@@ -1,6 +1,11 @@
 import * as Joi from 'joi';
 
-export const validate = (user: any): Joi.ValidationResult<any> => {
+interface User {
+    email: string;
+    password: string;
+}
+
+export const validate = (user: any): Joi.ValidationResult<User> => {
     // TODO: Temporarily serves both as login and register validator
     // in the future register should have separate validator
     const schema = {

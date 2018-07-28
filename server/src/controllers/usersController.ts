@@ -12,16 +12,16 @@ router.get('/', authenticate, async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-    const { error } = validate(req.body);
+    const { error, value: validated } = validate(req.body);
     if (error) {
         return res.status(400).send({ message: 'Email and password must be supplied' });
     }
     const userRepository = getRepository(User);
     const user = new User();
-    user.email = req.body.email;
+    user.email = validated.email;
     user.admin = true;
     try {
-        user.password = await bcrypt.hash(req.body.password, 10);
+        user.password = await bcrypt.hash(validated.password, 10);
         const createdUser = await userRepository.save(user);
         return res.status(200).send(_.pick(createdUser, ['id', 'email', 'admin']));
     } catch (error) {
