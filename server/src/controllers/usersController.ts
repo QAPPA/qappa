@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as _ from 'lodash';
 import { User } from '../entities/User';
-import { validate } from '../utils/validations/user';
+import { validateRegister } from '../utils/validations/user';
 import { authenticate } from '../middleware/auth';
 const router = Router();
 
@@ -15,7 +15,7 @@ router.get('/', authenticate, async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-    const { error, value: validated } = validate(req.body);
+    const { error, value: validated } = validateRegister(req.body);
     if (error) {
         return res.status(400).send({ message: 'Email and password must be supplied' });
     }
