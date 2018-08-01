@@ -90,7 +90,15 @@ export default {
                 console.log('form validate callback, valid', valid);
                 console.log('form validate callback, fields', fields);
                 if (valid) {
-                    alert('OK');
+                    this.$axios.$post('/users', {
+                        email: this.form.email,
+                        password: this.form.password,
+                        admin: this.form.admin
+                    }).then((response) => {
+                        console.log('axios register post, success response', response);
+                    }).catch((error) => {
+                        console.log('axios register post, error response', error);
+                    });
                 }
             });
         }
