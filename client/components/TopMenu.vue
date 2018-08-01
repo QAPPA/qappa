@@ -8,6 +8,7 @@
             active-text-color="#409EFF"
             @select="handleSelect">
             <el-menu-item index="1">Home</el-menu-item>
+            <el-menu-item index="2"><nuxt-link to="/admin">Admin</nuxt-link></el-menu-item>
             <div class="menu-text">
                 <p class="menu-user">
                     <strong>Logged user:</strong> {{ user }} (<a
