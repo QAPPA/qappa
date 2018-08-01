@@ -19,7 +19,7 @@ router.post('/', async (req: Request, res: Response) => {
     const userRepository = getRepository(User);
     const user = new User();
     user.email = validated.email;
-    user.admin = true;
+    user.admin = (validated.admin !== undefined) ? validated.admin : true;
     try {
         user.password = await bcrypt.hash(validated.password, 10);
         const createdUser = await userRepository.save(user);
