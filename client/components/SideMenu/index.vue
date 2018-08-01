@@ -1,5 +1,11 @@
 <template>
-    <component :is="currentMenuName"></component>
+    <el-menu
+        default-active="1"
+        class="side-menu"
+        @open="handleOpen"
+        @close="handleClose">
+        <component :is="currentMenuName"></component>
+    </el-menu>
 </template>
 
 <script>
@@ -16,6 +22,14 @@ export default {
             return (this.$route.path.includes('admin')) ? 'admin' : 'default';
         }
     },
+    methods: {
+        handleOpen(key, keyPath) {
+            console.log(key, keyPath);
+        },
+        handleClose(key, keyPath) {
+            console.log(key, keyPath);
+        }
+    }
 };
 </script>
 
