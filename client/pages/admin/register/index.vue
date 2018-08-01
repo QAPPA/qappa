@@ -86,20 +86,28 @@ export default {
     },
     methods: {
         handleSubmit() {
-            this.$refs.form.validate((valid, fields) => {
-                console.log('form validate callback, valid', valid);
-                console.log('form validate callback, fields', fields);
-                if (valid) {
-                    this.$axios.$post('/users', {
-                        email: this.form.email,
-                        password: this.form.password,
-                        admin: this.form.admin
-                    }).then((response) => {
-                        console.log('axios register post, success response', response);
-                    }).catch((error) => {
-                        console.log('axios register post, error response', error);
-                    });
+            this.$refs.form.validate((valid) => {
+                if (!valid) {
+                    return;
                 }
+                this.$axios.$post('/users', {
+                    email: this.form.email,
+                    password: this.form.password,
+                    admin: this.form.admin
+                }).then(() => {
+                    this.$router.push('/admin');
+                    this.$notify({
+                        type: 'success',
+                        title: 'Success',
+                        message: 'Registration successful'
+                    });
+                }).catch((error) => {
+                    this.$notify({
+                        type: 'error',
+                        title: 'Error',
+                        message: error.response.data.message
+                    });
+                });
             });
         }
     }

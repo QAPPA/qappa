@@ -17,6 +17,7 @@ router.post('/', async (req: Request, res: Response) => {
         return res.status(400).send({ message: 'Email and password must be supplied' });
     }
     const userRepository = getRepository(User);
+    // TODO: check for existing user! + tests
     const user = new User();
     user.email = validated.email;
     user.admin = (validated.admin !== undefined) ? validated.admin : true;
