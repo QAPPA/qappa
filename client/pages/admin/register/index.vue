@@ -99,13 +99,15 @@ export default {
                     this.$notify({
                         type: 'success',
                         title: 'Success',
-                        message: 'Registration successful'
+                        message: 'Registration successful',
+                        position: 'bottom-right'
                     });
                 }).catch((error) => {
                     this.$notify({
                         type: 'error',
                         title: 'Error',
-                        message: error.response.data.message
+                        message: error.response.data.message,
+                        position: 'bottom-right'
                     });
                 });
             });
