@@ -21,6 +21,7 @@ describe('GET /users', () => {
             .get('/users')
             .set('Authorization', `Bearer ${token}`);
         expect(response.status).toBe(200);
+        // FIXME
         expect(response.body.message).toMatch(/Sending all users/);
     });
 });

@@ -8,7 +8,10 @@ import { authenticate } from '../middleware/auth';
 const router = Router();
 
 router.get('/', authenticate, async (req: Request, res: Response) => {
-    res.status(200).send({ message: 'Sending all users' });
+    const repository = getRepository(User);
+    const all = await repository.find();
+    const users = all.map(user => _.pick(user, ['id', 'email', 'admin']));
+    res.status(200).send({ users });
 });
 
 router.post('/', async (req: Request, res: Response) => {
