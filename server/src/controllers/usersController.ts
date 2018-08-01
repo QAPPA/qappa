@@ -20,7 +20,10 @@ router.post('/', async (req: Request, res: Response) => {
         return res.status(400).send({ message: 'Email and password must be supplied' });
     }
     const userRepository = getRepository(User);
-    // TODO: check for existing user! + tests
+    const existing = userRepository.findOne({ email: validated.email });
+    if (existing) {
+        return res.status(400).send({ message: 'User with given email already exists' });
+    }
     const user = new User();
     user.email = validated.email;
     user.admin = (validated.admin !== undefined) ? validated.admin : true;

@@ -15,14 +15,36 @@ describe('GET /users', () => {
         expect(response.status).toBe(401);
     });
 
-    it('should respond with status 200 for valid request', async () => {
+    it('should respond with status 200 and user array for valid request', async () => {
+        const connection: Connection = await createConnection();
+        const repository = getRepository(User);
+
+        const user1 = new User();
+        user1.email = 'test@qappa.net';
+        user1.admin = true;
+        user1.password = await bcrypt.hash('password', 10);
+        await repository.save(user1);
+
+        const user2 = new User();
+        user2.email = 'test2@qappa.net';
+        user2.admin = true;
+        user2.password = await bcrypt.hash('password', 10);
+        await repository.save(user2);
+
         const token = jwt.sign({ id: 1, admin: true }, config.get('jwtSecret'));
         const response: Response = await request
             .get('/users')
             .set('Authorization', `Bearer ${token}`);
         expect(response.status).toBe(200);
-        // FIXME
-        expect(response.body.message).toMatch(/Sending all users/);
+        expect(response.body.users).toHaveLength(2);
+
+        const singleUser = response.body.users[0];
+        expect(singleUser).toHaveProperty('id');
+        expect(singleUser).toHaveProperty('email');
+        expect(singleUser).toHaveProperty('admin');
+
+        await connection.dropDatabase();
+        await connection.close();
     });
 });
 
@@ -53,6 +75,27 @@ describe('POST /users', () => {
         const response: Response = await request.post('/users').send({});
         expect(response.status).toBe(400);
         expect(response.body.message).toMatch(/Email and password must be supplied/);
+    });
+
+    it('should respond with status 400 if user already exists', async () => {
+        const repository = getRepository(User);
+        const user = new User();
+        user.email = 'test@qappa.net';
+        user.admin = true;
+        user.password = await bcrypt.hash('password', 10);
+        const savedUser = await repository.save(user);
+
+        const response: Response = await request
+            .post('/users')
+            .send({
+                email: user.email,
+                password: 'password'
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toMatch(/User with given email already exists/);
+
+        await repository.delete({ id: savedUser.id });
     });
 
     it('should save new user to DB if request is valid', async () => {
