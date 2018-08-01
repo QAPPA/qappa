@@ -1,9 +1,12 @@
 <template>
     <div>
-        <el-submenu index="1">
+        <el-menu-item index="1">
+            <i class="el-icon-location"></i>
+            <nuxt-link to="/admin/register">Register new user</nuxt-link>
+        </el-menu-item>
+        <el-submenu index="2">
             <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>Admin One</span>
+                Admin two
             </template>
             <el-menu-item-group title="Group One">
                 <el-menu-item index="1-1">item one</el-menu-item>
@@ -17,13 +20,9 @@
                 <el-menu-item index="1-4-1">item one</el-menu-item>
             </el-submenu>
         </el-submenu>
-        <el-menu-item index="2">
+        <el-menu-item index="3">
             <i class="el-icon-menu"></i>
             <span>Navigator Two</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span>Navigator Four</span>
         </el-menu-item>
     </div>
 </template>
