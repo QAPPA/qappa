@@ -18,7 +18,7 @@
 
 <script>
     import TopMenu from '~/components/TopMenu.vue';
-    import SideMenu from '~/components/SideMenu.vue';
+    import SideMenu from '~/components/SideMenu';
 
     export default {
         components: {
