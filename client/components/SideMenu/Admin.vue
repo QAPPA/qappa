@@ -1,11 +1,11 @@
 <template>
     <div>
         <el-menu-item index="1">
-            <i class="el-icon-menu"></i>
+            <i class="el-icon-search"></i>
             <nuxt-link to="/admin/list">Users</nuxt-link>
         </el-menu-item>
         <el-menu-item index="2">
-            <i class="el-icon-location"></i>
+            <i class="el-icon-circle-plus-outline"></i>
             <nuxt-link to="/admin/register">Register new user</nuxt-link>
         </el-menu-item>
         <el-submenu index="3">

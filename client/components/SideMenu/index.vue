@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import Default from './Default';
-import Admin from './Admin';
+import Default from './Default.vue';
+import Admin from './Admin.vue';
 
 export default {
     components: {
