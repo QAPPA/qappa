@@ -1,7 +1,9 @@
 <template>
     <div>
         <h1>Users</h1>
-        <el-table :data="users">
+        <el-table
+            :data="users"
+            empty-text="No users found">
             <el-table-column
                 prop="id"
                 label="ID">
@@ -27,19 +29,16 @@ export default {
     },
     data() {
         return {
-            users: [
-                {
-                    id: 1,
-                    email: 'dummy1@qappa.net',
-                    admin: true.toString(),
-                },
-                {
-                    id: 2,
-                    email: 'dummy2@qappa.net',
-                    admin: false.toString(),
-                }
-            ]
+            users: []
         };
+    },
+    async mounted() {
+        const { users } = await this.$axios.$get('/users');
+        this.users = users.map(user => ({
+            id: user.id,
+            email: user.email,
+            admin: user.admin.toString()
+        }));
     }
 };
 </script>
