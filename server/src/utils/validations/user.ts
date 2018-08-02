@@ -5,12 +5,24 @@ interface User {
     password: string;
 }
 
-export const validate = (user: any): Joi.ValidationResult<User> => {
-    // TODO: Temporarily serves both as login and register validator
-    // in the future register should have separate validator
-    const schema = {
-        email: Joi.string().min(5).max(100).required().email(),
-        password: Joi.string().min(5).max(255).required()
-    };
-    return Joi.validate(user, schema);
+interface UserRegister extends User {
+    admin?: boolean;
+}
+
+const userSchema = {
+    email: Joi.string().min(5).max(100).required().email(),
+    password: Joi.string().min(5).max(255).required()
+};
+
+const userRegisterSchema = {
+    ...userSchema,
+    admin: Joi.boolean()
+};
+
+export const validateLogin = (user: any): Joi.ValidationResult<User> => {
+    return Joi.validate(user, userSchema);
+};
+
+export const validateRegister = (user: any): Joi.ValidationResult<UserRegister> => {
+    return Joi.validate(user, userRegisterSchema);
 };

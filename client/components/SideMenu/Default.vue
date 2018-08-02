@@ -1,9 +1,5 @@
 <template>
-    <el-menu
-        default-active="2"
-        class="side-menu"
-        @open="handleOpen"
-        @close="handleClose">
+    <div>
         <el-submenu index="1">
             <template slot="title">
                 <i class="el-icon-location"></i>
@@ -29,23 +25,11 @@
             <i class="el-icon-setting"></i>
             <span>Navigator Four</span>
         </el-menu-item>
-    </el-menu>
+    </div>
 </template>
 
 <script>
     export default {
-        methods: {
-            handleOpen(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            }
-        }
+
     };
 </script>
-
-<style lang="sass">
-    .side-menu
-        height: 100%
-</style>

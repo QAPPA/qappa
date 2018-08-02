@@ -1,6 +1,6 @@
-import { validate } from '@server/utils/validations/user';
+import { validateLogin, validateRegister } from '@server/utils/validations/user';
 
-describe('Joi User validation', () => {
+describe('User login validation', () => {
     let email;
     let password;
 
@@ -10,10 +10,10 @@ describe('Joi User validation', () => {
     });
 
     describe('Email validation', () => {
-        describe('it should return error if it is not a string', () => {
+        describe('should return error if it is not a string', () => {
             it('undefined', () => {
                 email = undefined;
-                const { error } = validate({
+                const { error } = validateLogin({
                     email,
                     password
                 });
@@ -21,7 +21,7 @@ describe('Joi User validation', () => {
             });
             it('null', () => {
                 email = null;
-                const { error } = validate({
+                const { error } = validateLogin({
                     email,
                     password
                 });
@@ -29,7 +29,7 @@ describe('Joi User validation', () => {
             });
             it('wrong type', () => {
                 email = 0;
-                const { error } = validate({
+                const { error } = validateLogin({
                     email,
                     password
                 });
@@ -38,7 +38,7 @@ describe('Joi User validation', () => {
         });
         it('should return error if it is less than 5 characters long', () => {
             email = Array(5).join('a');
-            const { error } = validate({
+            const { error } = validateLogin({
                 email,
                 password
             });
@@ -46,21 +46,21 @@ describe('Joi User validation', () => {
         });
         it('should return error if it is more than 100 characters long', () => {
             email = Array(102).join('a');
-            const { error } = validate({
+            const { error } = validateLogin({
                 email,
                 password
             });
             expect(error).toBeTruthy();
         });
         it('should return error if it is not passed', () => {
-            const { error } = validate({
+            const { error } = validateLogin({
                 password
             });
             expect(error).toBeTruthy();
         });
         it('should return error if it is not a valid email', () => {
             email = 'this is not a valid email';
-            const { error } = validate({
+            const { error } = validateLogin({
                 email,
                 password
             });
@@ -68,10 +68,10 @@ describe('Joi User validation', () => {
         });
     });
     describe('Password validation', () => {
-        describe('it should return error if it is not a string', () => {
+        describe('should return error if it is not a string', () => {
             it('undefined', () => {
                 password = undefined;
-                const { error } = validate({
+                const { error } = validateLogin({
                     email,
                     password
                 });
@@ -79,7 +79,7 @@ describe('Joi User validation', () => {
             });
             it('null', () => {
                 password = null;
-                const { error } = validate({
+                const { error } = validateLogin({
                     email,
                     password
                 });
@@ -87,7 +87,7 @@ describe('Joi User validation', () => {
             });
             it('wrong type', () => {
                 password = 0;
-                const { error } = validate({
+                const { error } = validateLogin({
                     email,
                     password
                 });
@@ -96,7 +96,7 @@ describe('Joi User validation', () => {
         });
         it('should return error if it is less than 5 characters long', () => {
             password = Array(5).join('a');
-            const { error } = validate({
+            const { error } = validateLogin({
                 email,
                 password
             });
@@ -104,21 +104,185 @@ describe('Joi User validation', () => {
         });
         it('should return error if it is more than 255 characters long', () => {
             password = Array(257).join('a');
-            const { error } = validate({
+            const { error } = validateLogin({
                 email,
                 password
             });
             expect(error).toBeTruthy();
         });
         it('should return error if it is not passed', () => {
-            const { error } = validate({
+            const { error } = validateLogin({
                 email
             });
             expect(error).toBeTruthy();
         });
     });
     it('should return null error if email and password are valid', () => {
-        const { error } = validate({
+        const { error } = validateLogin({
+            email,
+            password
+        });
+        expect(error).toBeNull();
+    });
+});
+
+describe('User register validation', () => {
+    let email;
+    let password;
+
+    beforeEach(() => {
+        email = 'chizu@qappa.net';
+        password = 'password';
+    });
+
+    describe('Email validation', () => {
+        describe('should return error if it is not a string', () => {
+            it('undefined', () => {
+                email = undefined;
+                const { error } = validateRegister({
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+            it('null', () => {
+                email = null;
+                const { error } = validateRegister({
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+            it('wrong type', () => {
+                email = 0;
+                const { error } = validateRegister({
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+        });
+        it('should return error if it is less than 5 characters long', () => {
+            email = Array(5).join('a');
+            const { error } = validateRegister({
+                email,
+                password
+            });
+            expect(error).toBeTruthy();
+        });
+        it('should return error if it is more than 100 characters long', () => {
+            email = Array(102).join('a');
+            const { error } = validateRegister({
+                email,
+                password
+            });
+            expect(error).toBeTruthy();
+        });
+        it('should return error if it is not passed', () => {
+            const { error } = validateRegister({
+                password
+            });
+            expect(error).toBeTruthy();
+        });
+        it('should return error if it is not a valid email', () => {
+            email = 'this is not a valid email';
+            const { error } = validateRegister({
+                email,
+                password
+            });
+            expect(error).toBeTruthy();
+        });
+    });
+    describe('Password validation', () => {
+        describe('should return error if it is not a string', () => {
+            it('undefined', () => {
+                password = undefined;
+                const { error } = validateRegister({
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+            it('null', () => {
+                password = null;
+                const { error } = validateRegister({
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+            it('wrong type', () => {
+                password = 0;
+                const { error } = validateRegister({
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+        });
+        it('should return error if it is less than 5 characters long', () => {
+            password = Array(5).join('a');
+            const { error } = validateRegister({
+                email,
+                password
+            });
+            expect(error).toBeTruthy();
+        });
+        it('should return error if it is more than 255 characters long', () => {
+            password = Array(257).join('a');
+            const { error } = validateRegister({
+                email,
+                password
+            });
+            expect(error).toBeTruthy();
+        });
+        it('should return error if it is not passed', () => {
+            const { error } = validateRegister({
+                email
+            });
+            expect(error).toBeTruthy();
+        });
+    });
+    describe('Admin validation', () => {
+        describe('should return error if it is not a boolean', () => {
+            it('null', () => {
+                const admin = null;
+                const { error } = validateRegister({
+                    email,
+                    password,
+                    admin
+                });
+                expect(error).toBeTruthy();
+            });
+            it('wrong type', () => {
+                const admin = 0;
+                const { error } = validateRegister({
+                    email,
+                    password,
+                    admin
+                });
+                expect(error).toBeTruthy();
+            });
+        });
+        it('should return null error if admin was not passed', () => {
+            const { error } = validateRegister({
+                email,
+                password
+            });
+            expect(error).toBeNull();
+        });
+        it('should return null error if valid value was passed', () => {
+            const admin = true;
+            const { error } = validateRegister({
+                email,
+                password,
+                admin
+            });
+            expect(error).toBeNull();
+        });
+    });
+    it('should return null error if email and password are valid', () => {
+        const { error } = validateRegister({
             email,
             password
         });

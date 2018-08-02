@@ -15,13 +15,36 @@ describe('GET /users', () => {
         expect(response.status).toBe(401);
     });
 
-    it('should respond with status 200 for valid request', async () => {
+    it('should respond with status 200 and user array for valid request', async () => {
+        const connection: Connection = await createConnection();
+        const repository = getRepository(User);
+
+        const user1 = new User();
+        user1.email = 'test@qappa.net';
+        user1.admin = true;
+        user1.password = await bcrypt.hash('password', 10);
+        await repository.save(user1);
+
+        const user2 = new User();
+        user2.email = 'test2@qappa.net';
+        user2.admin = true;
+        user2.password = await bcrypt.hash('password', 10);
+        await repository.save(user2);
+
         const token = jwt.sign({ id: 1, admin: true }, config.get('jwtSecret'));
         const response: Response = await request
             .get('/users')
             .set('Authorization', `Bearer ${token}`);
         expect(response.status).toBe(200);
-        expect(response.body.message).toMatch(/Sending all users/);
+        expect(response.body.users).toHaveLength(2);
+
+        const singleUser = response.body.users[0];
+        expect(singleUser).toHaveProperty('id');
+        expect(singleUser).toHaveProperty('email');
+        expect(singleUser).toHaveProperty('admin');
+
+        await connection.dropDatabase();
+        await connection.close();
     });
 });
 
@@ -54,7 +77,28 @@ describe('POST /users', () => {
         expect(response.body.message).toMatch(/Email and password must be supplied/);
     });
 
-    it('should save new user to DB if request is valid', async () => {
+    it('should respond with status 400 if user already exists', async () => {
+        const repository = getRepository(User);
+        const user = new User();
+        user.email = 'test@qappa.net';
+        user.admin = true;
+        user.password = await bcrypt.hash('password', 10);
+        await repository.save(user);
+
+        const response: Response = await request
+            .post('/users')
+            .send({
+                email: user.email,
+                password: 'password'
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toMatch(/User with given email already exists/);
+
+        await repository.clear();
+    });
+
+    it('should save new user with admin defaultly to true to DB if request is valid', async () => {
         const email = 'test1@qappa.net';
         const response: Response = await request
             .post('/users')
@@ -71,6 +115,28 @@ describe('POST /users', () => {
             email,
             admin: true
         });
+        await repository.clear();
+    });
+
+    it('should save new user with specified admin to DB if request is valid', async () => {
+        const email = 'test1@qappa.net';
+        const response: Response = await request
+            .post('/users')
+            .send({
+                email,
+                password: 'password',
+                admin: false
+            });
+        expect(response.status).toBe(200);
+
+        const repository = getRepository(User);
+        const user = await repository.findOne({ email });
+        expect(user).toBeTruthy();
+        expect(user).toMatchObject({
+            email,
+            admin: false
+        });
+        await repository.clear();
     });
 
     it('should respond with status 200 and user if request is valid', async () => {
@@ -84,6 +150,9 @@ describe('POST /users', () => {
         expect(response.body).toHaveProperty('id');
         expect(response.body).toHaveProperty('email', 'test@qappa.net');
         expect(response.body).toHaveProperty('admin', true);
+
+        const repository = getRepository(User);
+        await repository.clear();
     });
 });
 

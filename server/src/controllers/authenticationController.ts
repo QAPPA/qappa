@@ -5,12 +5,12 @@ import * as jwt from 'jsonwebtoken';
 import * as _ from 'lodash';
 import * as config from 'config';
 import { User } from '../entities/User';
-import { validate } from '../utils/validations/user';
+import { validateLogin } from '../utils/validations/user';
 
 const router = Router();
 
 router.post('/login', async (req: Request, res: Response) => {
-    const { error, value: validated } = validate(req.body);
+    const { error, value: validated } = validateLogin(req.body);
     if (error) {
         return res.status(400).send({ message: 'Validation error' });
     }
