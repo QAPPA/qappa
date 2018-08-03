@@ -1,6 +1,6 @@
 <template>
     <b-navbar
-        :sticky="sticky"
+        sticky
         toggleable="md"
         type="dark"
         variant="info">
@@ -34,11 +34,6 @@
 
 <script>
     export default {
-        data() {
-            return {
-                sticky: true
-            };
-        },
         computed: {
             user() {
                 return this.$auth.user;
