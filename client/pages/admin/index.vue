@@ -3,7 +3,7 @@
         <app-breadcrumb :items="breadcrumbItems" />
         <b-row>
             <b-col>
-                <h1>Welcome, user</h1>
+                <h1>Welcome, admin</h1>
             </b-col>
         </b-row>
     </div>
@@ -18,9 +18,9 @@
         },
         data() {
             return {
-                title: 'Dashboard',
+                title: 'Admin page',
                 breadcrumbItems: [
-                    { id: 0, name: 'dashboard', path: null }
+                    { id: 0, name: 'admin', path: null }
                 ]
             };
         }
