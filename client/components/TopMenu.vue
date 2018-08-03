@@ -5,17 +5,17 @@
         type="dark"
         variant="info">
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-        <b-navbar-brand href="/">QAPPA</b-navbar-brand>
+        <b-navbar-brand to="/">QAPPA</b-navbar-brand>
         <b-collapse
             id="nav_collapse"
             is-nav>
             <b-navbar-nav>
-                <b-nav-item href="/">Home</b-nav-item>
+                <b-nav-item to="/">Home</b-nav-item>
                 <b-nav-item-dropdown
                     text="Admin"
                     right>
-                    <b-dropdown-item href="/admin/list">Show all users</b-dropdown-item>
-                    <b-dropdown-item href="/admin/register">Register new user</b-dropdown-item>
+                    <b-dropdown-item to="/admin/list">Show all users</b-dropdown-item>
+                    <b-dropdown-item to="/admin/register">Register new user</b-dropdown-item>
                 </b-nav-item-dropdown>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
