@@ -10,7 +10,8 @@
             id="nav_collapse"
             is-nav>
             <b-navbar-nav>
-                <b-nav-item href="/admin">Home</b-nav-item>
+                <b-nav-item href="/">Home</b-nav-item>
+                <b-nav-item href="/admin">Admin</b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-text><strong>Logged user: </strong></b-nav-text>
@@ -30,7 +31,6 @@
     export default {
         data() {
             return {
-                activeIndex: '1'
             };
         },
         computed: {
