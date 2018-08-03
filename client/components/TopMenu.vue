@@ -1,9 +1,9 @@
 <template>
     <b-navbar
+        :sticky="sticky"
         toggleable="md"
         type="dark"
-        variant="info"
-        sticky="true">
+        variant="info">
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
         <b-navbar-brand href="/">QAPPA</b-navbar-brand>
         <b-collapse
@@ -31,6 +31,7 @@
     export default {
         data() {
             return {
+                sticky: true
             };
         },
         computed: {
