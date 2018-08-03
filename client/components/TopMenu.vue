@@ -11,7 +11,12 @@
             is-nav>
             <b-navbar-nav>
                 <b-nav-item href="/">Home</b-nav-item>
-                <b-nav-item href="/admin">Admin</b-nav-item>
+                <b-nav-item-dropdown
+                    text="Admin"
+                    right>
+                    <b-dropdown-item href="/admin/list">Show all users</b-dropdown-item>
+                    <b-dropdown-item href="/admin/register">Register new user</b-dropdown-item>
+                </b-nav-item-dropdown>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-text><strong>Logged user: </strong></b-nav-text>

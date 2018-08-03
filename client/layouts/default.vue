@@ -1,7 +1,9 @@
 <template>
     <div id="main">
         <top-menu />
-        <b-container fluid>
+        <b-container
+            id="content"
+            fluid>
             <b-row>
                 <b-col xs="12">
                     <nuxt />
@@ -23,4 +25,6 @@
 </script>
 
 <style lang="sass">
+    #content
+        margin-top: 20px
 </style>
