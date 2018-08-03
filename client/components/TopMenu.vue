@@ -1,24 +1,29 @@
 <template>
-    <div>
-        <el-menu
-            :default-active="activeIndex"
-            mode="horizontal"
-            background-color="#2d3a4b"
-            text-color="#fff"
-            active-text-color="#409EFF"
-            @select="handleSelect">
-            <el-menu-item index="1"><nuxt-link to="/">Home</nuxt-link></el-menu-item>
-            <el-menu-item index="2"><nuxt-link to="/admin">Admin</nuxt-link></el-menu-item>
-            <div class="menu-text">
-                <p class="menu-user">
-                    <strong>Logged user:</strong> {{ user }} (<a
-                        href="#"
-                        @click="handleLogout">Log out</a>)
-                </p>
-            </div>
-        </el-menu>
-        <div class="line"></div>
-    </div>
+    <b-navbar
+        toggleable="md"
+        type="dark"
+        variant="info"
+        sticky="true">
+        <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+        <b-navbar-brand href="/">QAPPA</b-navbar-brand>
+        <b-collapse
+            id="nav_collapse"
+            is-nav>
+            <b-navbar-nav>
+                <b-nav-item href="/admin">Home</b-nav-item>
+            </b-navbar-nav>
+            <b-navbar-nav class="ml-auto">
+                <b-nav-text><strong>Logged user: </strong></b-nav-text>
+                <b-nav-item-dropdown
+                    :text="user"
+                    right>
+                    <b-dropdown-item href="#">My account</b-dropdown-item>
+                    <b-dropdown-item href="#">Settings</b-dropdown-item>
+                    <b-dropdown-item @click="handleLogout">Log out</b-dropdown-item>
+                </b-nav-item-dropdown>
+            </b-navbar-nav>
+        </b-collapse>
+    </b-navbar>
 </template>
 
 <script>
@@ -34,9 +39,6 @@
             }
         },
         methods: {
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-            },
             async handleLogout() {
                 await this.$auth.logout();
             }
@@ -45,13 +47,4 @@
 </script>
 
 <style lang="sass" scoped>
-    .menu-text
-        float: right
-        color: #fff
-    .menu-user
-        height: 60px
-        line-height: 60px
-        margin: 0
-        font-size: 14px
-        padding: 0 20px
 </style>
