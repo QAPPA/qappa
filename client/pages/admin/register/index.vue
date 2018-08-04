@@ -1,38 +1,47 @@
 <template>
-    <el-col :span="12">
-        <h1>Register new user</h1>
-        <el-form
-            ref="form"
-            :model="form"
-            :rules="rules"
-            label-width="150px">
-            <el-form-item
-                label="E-mail"
-                prop="email">
-                <el-input
-                    v-model="form.email"
-                    :minlength="5"
-                    :maxlength="100"></el-input>
-            </el-form-item>
-            <el-form-item
-                label="Password"
-                prop="password">
-                <el-input
-                    v-model="form.password"
-                    :minlength="5"
-                    :maxlength="255"
-                    type="password"></el-input>
-            </el-form-item>
-            <el-form-item label="Admin">
-                <el-switch v-model="form.admin"></el-switch>
-            </el-form-item>
-            <el-form-item>
-                <el-button
-                    type="primary"
-                    @click="handleSubmit">Register</el-button>
-            </el-form-item>
-        </el-form>
-    </el-col>
+    <div>
+        <app-breadcrumb :items="breadcrumbItems" />
+        <b-row>
+            <b-col>
+                <h1>Register new user</h1>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col>
+                <el-form
+                    ref="form"
+                    :model="form"
+                    :rules="rules"
+                    label-width="150px">
+                    <el-form-item
+                        label="E-mail"
+                        prop="email">
+                        <el-input
+                            v-model="form.email"
+                            :minlength="5"
+                            :maxlength="100"></el-input>
+                    </el-form-item>
+                    <el-form-item
+                        label="Password"
+                        prop="password">
+                        <el-input
+                            v-model="form.password"
+                            :minlength="5"
+                            :maxlength="255"
+                            type="password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Admin">
+                        <el-switch v-model="form.admin"></el-switch>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button
+                            type="primary"
+                            @click="handleSubmit">Register</el-button>
+                    </el-form-item>
+                </el-form>
+            </b-col>
+        </b-row>
+    </div>
 </template>
 
 <script>
@@ -81,7 +90,11 @@ export default {
                         trigger: 'change'
                     }
                 ]
-            }
+            },
+            breadcrumbItems: [
+                { id: 0, name: 'admin', path: '/admin' },
+                { id: 1, name: 'register new user', path: '/admin/register' }
+            ]
         };
     },
     methods: {
@@ -115,3 +128,8 @@ export default {
     }
 };
 </script>
+
+<style lang="sass">
+    .el-form
+        margin-top: 40px
+</style>

@@ -1,22 +1,31 @@
 <template>
     <div>
-        <h1>Users</h1>
-        <el-table
-            :data="users"
-            empty-text="No users found">
-            <el-table-column
-                prop="id"
-                label="ID">
-            </el-table-column>
-            <el-table-column
-                prop="email"
-                label="Email">
-            </el-table-column>
-            <el-table-column
-                prop="admin"
-                label="Admin">
-            </el-table-column>
-        </el-table>
+        <app-breadcrumb :items="breadcrumbItems" />
+        <b-row>
+            <b-col>
+                <h1>Users</h1>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col>
+                <el-table
+                    :data="users"
+                    empty-text="No users found">
+                    <el-table-column
+                        prop="id"
+                        label="ID">
+                    </el-table-column>
+                    <el-table-column
+                        prop="email"
+                        label="Email">
+                    </el-table-column>
+                    <el-table-column
+                        prop="admin"
+                        label="Admin">
+                    </el-table-column>
+                </el-table>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
@@ -29,7 +38,11 @@ export default {
     },
     data() {
         return {
-            users: []
+            users: [],
+            breadcrumbItems: [
+                { id: 0, name: 'admin', path: '/admin' },
+                { id: 1, name: 'list all users', path: '/admin/list' }
+            ]
         };
     },
     async mounted() {

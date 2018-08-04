@@ -1,6 +1,11 @@
 <template>
     <div>
-        <h1>Welcome, user</h1>
+        <app-breadcrumb :items="breadcrumbItems" />
+        <b-row>
+            <b-col>
+                <h1>Welcome, user</h1>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
@@ -13,14 +18,11 @@
         },
         data() {
             return {
-                title: 'Dashboard'
+                title: 'Dashboard',
+                breadcrumbItems: [
+                    { id: 0, name: 'dashboard', path: null }
+                ]
             };
         }
     };
 </script>
-
-<style lang="sass" scoped>
-    h1
-        margin: 0
-        padding: 0
-</style>

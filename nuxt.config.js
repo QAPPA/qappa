@@ -52,7 +52,8 @@ module.exports = {
      ** Plugins to load before mounting the App
      */
     plugins: [
-        '@/plugins/element-ui'
+        '@/plugins/element-ui',
+        '@/plugins/globals'
     ],
 
     /*
@@ -60,7 +61,8 @@ module.exports = {
      */
     modules: [
         '@nuxtjs/axios',
-        '@nuxtjs/auth'
+        '@nuxtjs/auth',
+        'bootstrap-vue/nuxt'
     ],
 
     /*
