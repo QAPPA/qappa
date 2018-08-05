@@ -36,7 +36,8 @@
     export default {
         computed: {
             user() {
-                return this.$auth.user;
+                const user = this.$auth.user;
+                return `${user.name} ${user.surname}`;
             }
         },
         methods: {

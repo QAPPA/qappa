@@ -42,7 +42,7 @@ router.get('/me', authenticate, async (req: Request, res: Response) => {
     if (!user) {
         return res.status(400).send({ message: 'Authentication failed' });
     }
-    return res.status(200).send(_.pick(user, ['id', 'email', 'admin']));
+    return res.status(200).send({ user: _.pick(user, ['id', 'name', 'surname', 'email', 'admin']) });
 });
 
 export default router;

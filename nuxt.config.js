@@ -88,7 +88,7 @@ module.exports = {
                 endpoints: {
                     login: { url: '/auth/login', method: 'post', propertyName: 'token' },
                     logout: { url: '/auth/logout', method: 'post' },
-                    user: { url: '/users/me', method: 'get', propertyName: 'email' }
+                    user: { url: '/users/me', method: 'get', propertyName: 'user' }
                 }
             }
         },
