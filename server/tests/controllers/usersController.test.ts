@@ -44,6 +44,8 @@ describe('GET /users', () => {
 
         const singleUser = response.body.users[0];
         expect(singleUser).toHaveProperty('id');
+        expect(singleUser).toHaveProperty('name');
+        expect(singleUser).toHaveProperty('surname');
         expect(singleUser).toHaveProperty('email');
         expect(singleUser).toHaveProperty('admin');
 

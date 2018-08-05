@@ -10,7 +10,7 @@ const router = Router();
 router.get('/', authenticate, async (req: Request, res: Response) => {
     const repository = getRepository(User);
     const all = await repository.find();
-    const users = all.map(user => _.pick(user, ['id', 'email', 'admin']));
+    const users = all.map(user => _.pick(user, ['id', 'name', 'surname', 'email', 'admin']));
     res.status(200).send({ users });
 });
 
