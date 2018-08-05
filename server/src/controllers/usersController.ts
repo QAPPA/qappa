@@ -17,7 +17,7 @@ router.get('/', authenticate, async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
     const { error, value: validated } = validateRegister(req.body);
     if (error) {
-        return res.status(400).send({ message: 'Email and password must be supplied' });
+        return res.status(400).send({ message: 'Name, surname, email and password must be supplied' });
     }
     const userRepository = getRepository(User);
     const existing = await userRepository.findOne({ email: validated.email });
@@ -25,12 +25,14 @@ router.post('/', async (req: Request, res: Response) => {
         return res.status(400).send({ message: 'User with given email already exists' });
     }
     const user = new User();
+    user.name = validated.name;
+    user.surname = validated.surname;
     user.email = validated.email;
     user.admin = (validated.admin !== undefined) ? validated.admin : true;
     try {
         user.password = await bcrypt.hash(validated.password, 10);
         const createdUser = await userRepository.save(user);
-        return res.status(200).send(_.pick(createdUser, ['id', 'email', 'admin']));
+        return res.status(200).send(_.pick(createdUser, ['id', 'name', 'surname', 'email', 'admin']));
     } catch (error) {
         return res.status(500).send({ error });
     }
