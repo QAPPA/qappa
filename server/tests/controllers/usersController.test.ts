@@ -20,12 +20,16 @@ describe('GET /users', () => {
         const repository = getRepository(User);
 
         const user1 = new User();
+        user1.name = 'John';
+        user1.surname = 'Smith';
         user1.email = 'test@qappa.net';
         user1.admin = true;
         user1.password = await bcrypt.hash('password', 10);
         await repository.save(user1);
 
         const user2 = new User();
+        user2.name = 'Jane';
+        user2.surname = 'Smith';
         user2.email = 'test2@qappa.net';
         user2.admin = true;
         user2.password = await bcrypt.hash('password', 10);
@@ -72,14 +76,16 @@ describe('POST /users', () => {
 
     describe('should respond with status code 400', () => {
         it('if request body is invalid', async () => {
-            // validate() has already been tested
+            // validateRegister() has already been tested
             const response: Response = await request.post('/users').send({});
             expect(response.status).toBe(400);
-            expect(response.body.message).toMatch(/Email and password must be supplied/);
+            expect(response.body.message).toMatch(/Name, surname, email and password must be supplied/);
         });
         it('if user already exists', async () => {
             const repository = getRepository(User);
             const user = new User();
+            user.name = 'John';
+            user.surname = 'Smith';
             user.email = 'test@qappa.net';
             user.admin = true;
             user.password = await bcrypt.hash('password', 10);
@@ -88,6 +94,8 @@ describe('POST /users', () => {
             const response: Response = await request
                 .post('/users')
                 .send({
+                    name: user.name,
+                    surname: user.surname,
                     email: user.email,
                     password: 'password'
                 });
@@ -100,49 +108,67 @@ describe('POST /users', () => {
     });
     describe('should respond with status code 200 and user in response if request is valid', () => {
         it('if admin property was not specified', async () => {
+            const name = 'John';
+            const surname = 'Smith';
             const email = 'test@qappa.net';
             const response: Response = await request
                 .post('/users')
                 .send({
+                    name,
+                    surname,
                     email,
                     password: 'password'
                 });
             // response verification
             expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('id');
-            expect(response.body).toHaveProperty('email', 'test@qappa.net');
-            expect(response.body).toHaveProperty('admin', true);
+            const body = response.body;
+            expect(body).toHaveProperty('id');
+            expect(body).toHaveProperty('name', name);
+            expect(body).toHaveProperty('surname', surname);
+            expect(body).toHaveProperty('email', email);
+            expect(body).toHaveProperty('admin', true);
 
             // DB verification
             const repository = getRepository(User);
             const user = await repository.findOne({ email });
             expect(user).toBeTruthy();
             expect(user).toMatchObject({
+                name,
+                surname,
                 email,
                 admin: true
             });
             await repository.clear();
         });
         it('if admin property was specified', async () => {
+            const name = 'John';
+            const surname = 'Smith';
             const email = 'test@qappa.net';
             const response: Response = await request
                 .post('/users')
                 .send({
+                    name,
+                    surname,
                     email,
                     password: 'password',
                     admin: false
                 });
             // response verification
             expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('id');
-            expect(response.body).toHaveProperty('email', 'test@qappa.net');
-            expect(response.body).toHaveProperty('admin', false);
+            const body = response.body;
+            expect(body).toHaveProperty('id');
+            expect(body).toHaveProperty('name', name);
+            expect(body).toHaveProperty('surname', surname);
+            expect(body).toHaveProperty('email', email);
+            expect(body).toHaveProperty('admin', false);
 
             // DB verification
             const repository = getRepository(User);
             const user = await repository.findOne({ email });
             expect(user).toBeTruthy();
             expect(user).toMatchObject({
+                name,
+                surname,
                 email,
                 admin: false
             });
@@ -190,6 +216,8 @@ describe('GET /users/me', () => {
     it('should respond with status 200 and user if request is valid', async () => {
         const repository = getRepository(User);
         const user = new User();
+        user.name = 'John';
+        user.surname = 'Smith';
         user.email = 'test@qappa.net';
         user.admin = true;
         user.password = await bcrypt.hash('password', 10);
@@ -201,12 +229,16 @@ describe('GET /users/me', () => {
             .set('Authorization', `Bearer ${token}`);
 
         expect(response.status).toBe(200);
-        expect(response.body).toMatchObject({
+        expect(response.body).toHaveProperty('user');
+        const responseUser = response.body.user;
+        expect(responseUser).toMatchObject({
             id: savedUser.id,
+            name: savedUser.name,
+            surname: savedUser.surname,
             email: savedUser.email,
             admin: savedUser.admin
         });
 
-        await repository.delete({ id: savedUser.id });
+        await repository.clear();
     });
 });

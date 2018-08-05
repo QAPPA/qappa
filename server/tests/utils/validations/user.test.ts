@@ -129,20 +129,130 @@ describe('User login validation', () => {
 });
 
 describe('User register validation', () => {
+    let name;
+    let surname;
     let email;
     let password;
 
     beforeEach(() => {
+        name = 'John';
+        surname = 'Smith';
         email = 'chizu@qappa.net';
         password = 'password';
     });
 
     describe('should return error', () => {
+        describe('if name', () => {
+            describe('is not a string', () => {
+                it('undefined', () => {
+                    name = undefined;
+                    const { error } = validateRegister({
+                        name,
+                        surname,
+                        email,
+                        password
+                    });
+                    expect(error).toBeTruthy();
+                });
+                it('null', () => {
+                    name = null;
+                    const { error } = validateRegister({
+                        name,
+                        surname,
+                        email,
+                        password
+                    });
+                    expect(error).toBeTruthy();
+                });
+                it('wrong type', () => {
+                    name = 0;
+                    const { error } = validateRegister({
+                        name,
+                        surname,
+                        email,
+                        password
+                    });
+                    expect(error).toBeTruthy();
+                });
+            });
+            it('is more than 100 characters long', () => {
+                name = Array(102).join('a');
+                const { error } = validateRegister({
+                    name,
+                    surname,
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+            it('is not passed', () => {
+                const { error } = validateRegister({
+                    surname,
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+        });
+        describe('if surname', () => {
+            describe('is not a string', () => {
+                it('undefined', () => {
+                    surname = undefined;
+                    const { error } = validateRegister({
+                        name,
+                        surname,
+                        email,
+                        password
+                    });
+                    expect(error).toBeTruthy();
+                });
+                it('null', () => {
+                    surname = null;
+                    const { error } = validateRegister({
+                        name,
+                        surname,
+                        email,
+                        password
+                    });
+                    expect(error).toBeTruthy();
+                });
+                it('wrong type', () => {
+                    surname = 0;
+                    const { error } = validateRegister({
+                        name,
+                        surname,
+                        email,
+                        password
+                    });
+                    expect(error).toBeTruthy();
+                });
+            });
+            it('is more than 100 characters long', () => {
+                surname = Array(102).join('a');
+                const { error } = validateRegister({
+                    name,
+                    surname,
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+            it('is not passed', () => {
+                const { error } = validateRegister({
+                    name,
+                    email,
+                    password
+                });
+                expect(error).toBeTruthy();
+            });
+        });
         describe('if email', () => {
             describe('is not a string', () => {
                 it('undefined', () => {
                     email = undefined;
                     const { error } = validateRegister({
+                        name,
+                        surname,
                         email,
                         password
                     });
@@ -151,6 +261,8 @@ describe('User register validation', () => {
                 it('null', () => {
                     email = null;
                     const { error } = validateRegister({
+                        name,
+                        surname,
                         email,
                         password
                     });
@@ -159,6 +271,8 @@ describe('User register validation', () => {
                 it('wrong type', () => {
                     email = 0;
                     const { error } = validateRegister({
+                        name,
+                        surname,
                         email,
                         password
                     });
@@ -168,6 +282,8 @@ describe('User register validation', () => {
             it('is less than 5 characters long', () => {
                 email = Array(5).join('a');
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     email,
                     password
                 });
@@ -176,6 +292,8 @@ describe('User register validation', () => {
             it('is more than 100 characters long', () => {
                 email = Array(102).join('a');
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     email,
                     password
                 });
@@ -183,6 +301,8 @@ describe('User register validation', () => {
             });
             it('is not passed', () => {
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     password
                 });
                 expect(error).toBeTruthy();
@@ -190,6 +310,8 @@ describe('User register validation', () => {
             it('is not a valid email', () => {
                 email = 'this is not a valid email';
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     email,
                     password
                 });
@@ -201,6 +323,8 @@ describe('User register validation', () => {
                 it('undefined', () => {
                     password = undefined;
                     const { error } = validateRegister({
+                        name,
+                        surname,
                         email,
                         password
                     });
@@ -209,6 +333,8 @@ describe('User register validation', () => {
                 it('null', () => {
                     password = null;
                     const { error } = validateRegister({
+                        name,
+                        surname,
                         email,
                         password
                     });
@@ -217,6 +343,8 @@ describe('User register validation', () => {
                 it('wrong type', () => {
                     password = 0;
                     const { error } = validateRegister({
+                        name,
+                        surname,
                         email,
                         password
                     });
@@ -226,6 +354,8 @@ describe('User register validation', () => {
             it('is less than 5 characters long', () => {
                 password = Array(5).join('a');
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     email,
                     password
                 });
@@ -234,6 +364,8 @@ describe('User register validation', () => {
             it('is more than 255 characters long', () => {
                 password = Array(257).join('a');
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     email,
                     password
                 });
@@ -241,6 +373,8 @@ describe('User register validation', () => {
             });
             it('is not passed', () => {
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     email
                 });
                 expect(error).toBeTruthy();
@@ -250,6 +384,8 @@ describe('User register validation', () => {
             it('null', () => {
                 const admin = null;
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     email,
                     password,
                     admin
@@ -259,6 +395,8 @@ describe('User register validation', () => {
             it('wrong type', () => {
                 const admin = 0;
                 const { error } = validateRegister({
+                    name,
+                    surname,
                     email,
                     password,
                     admin
@@ -270,6 +408,8 @@ describe('User register validation', () => {
     describe('should return null error', () => {
         it('if email and password are valid and admin was not specified', () => {
             const { error } = validateRegister({
+                name,
+                surname,
                 email,
                 password
             });
@@ -278,6 +418,8 @@ describe('User register validation', () => {
         it('if email and password are valid and admin was specified', () => {
             const admin = true;
             const { error } = validateRegister({
+                name,
+                surname,
                 email,
                 password,
                 admin
