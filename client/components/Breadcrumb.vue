@@ -39,8 +39,9 @@
             async updateBreadcrumbs() {
                 // TODO: will need some rework when we'll have more complex paths, especially splitPaths()
                 const currentPath = this.$route.path;
+                const availableRoutes = this.$router.options.routes;
                 const paths = this.splitPaths(currentPath);
-                const routes = paths.map(path => this.$router.options.routes.find(route => route.path === path));
+                const routes = paths.map(path => availableRoutes.find(route => route.path === path));
                 this.breadcrumbs = await this.getTitles(routes);
             },
             splitPaths(path) {
@@ -60,7 +61,7 @@
             getTitles(routes) {
                 const crumbs = [];
                 let i = 0;
-                const promises = routes.map(route => {
+                const promises = routes.map((route) => {
                     const crumb = {
                         index: i++
                     };
