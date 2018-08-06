@@ -4,15 +4,16 @@ node_js:
   - "9"
 services:
   - mysql
+cache: yarn
 before_install:
   - mysql -e 'CREATE DATABASE qappa;'
   - mysql -e 'CREATE DATABASE qappa_test;'
 install:
-  - npm install
+  - yarn
 before_script:
-  - npm run server:lint
-  - npm run client:lint
-  - npm run to migration:run
-  - npm run client:build
+  - yarn server:lint
+  - yarn client:lint
+  - yarn to migration:run
+  - yarn client:build
 script:
-  - npm run test
+  - yarn test

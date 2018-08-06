@@ -14,6 +14,20 @@
                     :rules="rules"
                     label-width="150px">
                     <el-form-item
+                        label="Name"
+                        prop="name">
+                        <el-input
+                            v-model="form.name"
+                            :maxlength="100"></el-input>
+                    </el-form-item>
+                    <el-form-item
+                        label="Surname"
+                        prop="surname">
+                        <el-input
+                            v-model="form.surname"
+                            :maxlength="100"></el-input>
+                    </el-form-item>
+                    <el-form-item
                         label="E-mail"
                         prop="email">
                         <el-input
@@ -54,11 +68,37 @@ export default {
     data() {
         return {
             form: {
+                name: '',
+                surname: '',
                 email: '',
                 password: '',
                 admin: true,
             },
             rules: {
+                name: [
+                    {
+                        required: true,
+                        message: 'Please fill in name.',
+                        trigger: 'change'
+                    },
+                    {
+                        max: 100,
+                        message: 'Name must be less than 100 characters long.',
+                        trigger: 'change'
+                    }
+                ],
+                surname: [
+                    {
+                        required: true,
+                        message: 'Please fill in surname.',
+                        trigger: 'change'
+                    },
+                    {
+                        max: 100,
+                        message: 'Surame must be less than 100 characters long.',
+                        trigger: 'change'
+                    }
+                ],
                 email: [
                     {
                         required: true,
@@ -104,6 +144,8 @@ export default {
                     return;
                 }
                 this.$axios.$post('/users', {
+                    name: this.form.name,
+                    surname: this.form.surname,
                     email: this.form.email,
                     password: this.form.password,
                     admin: this.form.admin

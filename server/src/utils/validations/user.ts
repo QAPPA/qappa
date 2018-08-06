@@ -6,6 +6,8 @@ interface User {
 }
 
 interface UserRegister extends User {
+    name: string;
+    surname: string;
     admin?: boolean;
 }
 
@@ -16,6 +18,8 @@ const userSchema = {
 
 const userRegisterSchema = {
     ...userSchema,
+    name: Joi.string().max(100).required(),
+    surname: Joi.string().max(100).required(),
     admin: Joi.boolean()
 };
 

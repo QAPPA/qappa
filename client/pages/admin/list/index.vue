@@ -16,6 +16,14 @@
                         label="ID">
                     </el-table-column>
                     <el-table-column
+                        prop="name"
+                        label="Name">
+                    </el-table-column>
+                    <el-table-column
+                        prop="surname"
+                        label="Surname">
+                    </el-table-column>
+                    <el-table-column
                         prop="email"
                         label="Email">
                     </el-table-column>
@@ -49,6 +57,8 @@ export default {
         const { users } = await this.$axios.$get('/users');
         this.users = users.map(user => ({
             id: user.id,
+            name: user.name,
+            surname: user.surname,
             email: user.email,
             admin: user.admin.toString()
         }));
