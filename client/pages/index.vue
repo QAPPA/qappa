@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-breadcrumb :items="breadcrumbItems" />
+        <app-breadcrumb :items="breadcrumbs" />
         <b-row>
             <b-col>
                 <h1>Welcome, user</h1>
@@ -13,14 +13,14 @@
     export default {
         head() {
             return {
-                title: this.title
+                title: this.pageTitle
             };
         },
         data() {
             return {
-                title: 'Dashboard',
-                breadcrumbItems: [
-                    { id: 0, name: 'dashboard', path: null }
+                pageTitle: 'Dashboard',
+                breadcrumbs: [
+                    { index: 0, name: 'dashboard', path: null }
                 ]
             };
         }

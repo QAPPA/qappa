@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-breadcrumb :items="breadcrumbItems" />
+        <app-breadcrumb />
         <b-row>
             <b-col>
                 <h1>Register new user</h1>
@@ -62,11 +62,12 @@
 export default {
     head() {
         return {
-            title: 'Register'
+            title: this.pageTitle
         };
     },
     data() {
         return {
+            pageTitle: 'Register',
             form: {
                 name: '',
                 surname: '',
@@ -131,10 +132,6 @@ export default {
                     }
                 ]
             },
-            breadcrumbItems: [
-                { id: 0, name: 'admin', path: '/admin' },
-                { id: 1, name: 'register new user', path: '/admin/register' }
-            ]
         };
     },
     methods: {

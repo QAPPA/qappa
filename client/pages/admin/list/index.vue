@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-breadcrumb :items="breadcrumbItems" />
+        <app-breadcrumb />
         <b-row>
             <b-col>
                 <h1>Users</h1>
@@ -41,16 +41,13 @@
 export default {
     head() {
         return {
-            title: 'Users'
+            title: this.pageTitle
         };
     },
     data() {
         return {
+            pageTitle: 'Users',
             users: [],
-            breadcrumbItems: [
-                { id: 0, name: 'admin', path: '/admin' },
-                { id: 1, name: 'list all users', path: '/admin/list' }
-            ]
         };
     },
     async mounted() {
