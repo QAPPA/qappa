@@ -28,6 +28,46 @@
                             value-format="dd/MM/yyyy">
                         </el-date-picker>
                     </el-form-item>
+                    <el-form-item
+                        label="Team members"
+                        prop="users">
+                        <b-row
+                            v-for="(user, index) in form.users"
+                            :key="index"
+                            class="mb-2">
+                            <b-col cols="2">
+                                <el-select
+                                    v-model="user.userId"
+                                    clearable
+                                    placeholder="Select a person"
+                                    @change="handlePersonChange"
+                                    @clear="handlePersonClear(index)">
+                                    <el-option
+                                        v-for="user in availableUsers"
+                                        :key="user.id"
+                                        :label="user.name"
+                                        :value="user.id">
+                                    </el-option>
+                                </el-select>
+                            </b-col>
+                            <b-col cols="8">
+                                <el-select
+                                    v-if="user.userId !== undefined && user.userId !== ''"
+                                    v-model="user.roleIds"
+                                    class="roleSelect"
+                                    multiple
+                                    placeholder="Select roles"
+                                    @change="handlePersonChange">
+                                    <el-option
+                                        v-for="role in roles"
+                                        :key="role.id"
+                                        :label="role.name"
+                                        :value="role.id">
+                                    </el-option>
+                                </el-select>
+                            </b-col>
+                        </b-row>
+                    </el-form-item>
                     <el-form-item>
                         <el-button
                             type="primary"
@@ -50,9 +90,25 @@ export default {
     data() {
         return {
             pageTitle: 'Create a project',
+            users: [
+                { id: 0, name: 'Carl' },
+                { id: 1, name: 'John' },
+                { id: 2, name: 'Jessica' }
+            ],
+            roles: [
+                { id: 0, name: 'Tester' },
+                { id: 1, name: 'Developer' },
+                { id: 2, name: 'Analyst' }
+            ],
             form: {
                 name: '',
                 deadline: '', // in the format dd/MM/yyyy !
+                users: [
+                    {
+                        userId: '',
+                        roleIds: []
+                    }
+                ],
             },
             deadlineOptions: {
                 disabledDate(time) {
@@ -79,21 +135,88 @@ export default {
                         message: 'Please fill in project deadline.',
                         trigger: 'change'
                     }
+                ],
+                users: [
+                    {
+                        validator: (rule, value, callback) => {
+                            // if at least one user is valid, return ok
+                            value.forEach(user => {
+                                if (user.userId !== '' && user.roleIds.length > 0) {
+                                    return callback();
+                                }
+                            });
+                            callback(new Error(rule.message));
+                        },
+                        required: true,
+                        message: 'Please select at least one team member',
+                        trigger: 'change'
+                    },
+                    {
+                        validator: (rule, value, callback) => {
+                            // if we have another user available, there's an empty row, that's why we need to limit the loop
+                            // validates all selected users so they have at least one role
+                            const limit = (this.availableUsers.length === 0) ? value.length : value.length - 1;
+                            for (let i = 0; i < limit; i++) {
+                                const user = value[i];
+                                if (user.userId === '' || user.roleIds.length === 0) {
+                                    return callback(new Error(rule.message));
+                                }
+                            }
+                            callback();
+                        },
+                        required: true,
+                        message: 'Make sure all selected members have at least 1 role',
+                        trigger: 'change'
+                    }
                 ]
             }
         };
     },
+    computed: {
+        availableUsers() {
+            // filter out users that are in this.form.users (if user.id is different from every this.form.users[x].userId)
+            return this.users.filter(user => this.form.users.every(formUser => formUser.userId !== user.id));
+        }
+    },
     methods: {
+        handlePersonChange() {
+            const lastUser = this.form.users[this.form.users.length - 1];
+            // if last user in array is picked and there are more available users, add another row
+            if (lastUser.userId !== '' && this.availableUsers.length > 0) {
+                this.form.users.push({
+                    userId: '',
+                    roleIds: []
+                });
+            }
+        },
+        handlePersonClear(index) {
+            // if there's more than 1 row, remove the whole row, otherwise just reset data
+            if (this.form.users.length > 1) {
+                this.form.users.splice(index, 1);
+            }
+            else {
+                this.form.users[index].userId = '';
+                this.form.users[index].roleIds = [];
+            }
+        },
         handleSubmit() {
             this.$refs.form.validate((valid) => {
                 if (!valid) {
                     return;
                 }
                 // API call
-                console.log('Calling API with', this.form.name, this.form.deadline);
+                console.log('Calling API with');
+                console.log('form.name', this.form.name);
+                console.log('form.deadline', this.form.deadline);
+                console.log('form.users', this.form.users);
                 alert('Project created');
             });
         }
     }
 };
 </script>
+
+<style lang="sass" scoped>
+    .roleSelect
+        width: 50%
+</style>
