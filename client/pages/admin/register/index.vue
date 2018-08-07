@@ -62,11 +62,12 @@
 export default {
     head() {
         return {
-            title: 'Register'
+            title: this.pageTitle
         };
     },
     data() {
         return {
+            pageTitle: 'Register',
             form: {
                 name: '',
                 surname: '',

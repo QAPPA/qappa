@@ -13,11 +13,12 @@
     export default {
         head() {
             return {
-                title: 'Dashboard'
+                title: this.pageTitle
             };
         },
         data() {
             return {
+                pageTitle: 'Dashboard',
                 breadcrumbs: [
                     { index: 0, name: 'dashboard', path: null }
                 ]

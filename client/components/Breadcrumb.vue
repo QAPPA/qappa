@@ -38,6 +38,8 @@
         methods: {
             async updateBreadcrumbs() {
                 // TODO: will need some rework when we'll have more complex paths, especially splitPaths()
+                // TODO: also, this function should be called when updating the route (so probably beforeRouteEnter and beforeRouteUpdate)
+                //  TODO: and when changing the parent's page title (this.pageTitle = ...), we should probably emit an event and react to it here and re-generate the crumbs
                 const currentPath = this.$route.path;
                 const availableRoutes = this.$router.options.routes;
                 const paths = this.splitPaths(currentPath);
@@ -67,12 +69,12 @@
                     };
                     return route.component()
                         .then((component) => {
-                            const head = (component.head && component.head());
-                            const title = (head && head.title) || route.name;
+                            const headTitle = component.head && component.head() && component.head().title;
+                            const dataTitle = component.data && component.data() && component.data().pageTitle;
                             crumbs.push({
                                 ...crumb,
                                 path: route.path,
-                                name: title
+                                name: headTitle || dataTitle || route.name
                             });
                         });
                 });

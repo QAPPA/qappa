@@ -13,8 +13,13 @@
     export default {
         head() {
             return {
-                title: 'Admin page'
+                title: this.pageTitle
             };
         },
+        data() {
+            return {
+                pageTitle: 'Admin page'
+            };
+        }
     };
 </script>

@@ -41,11 +41,12 @@
 export default {
     head() {
         return {
-            title: 'Users'
+            title: this.pageTitle
         };
     },
     data() {
         return {
+            pageTitle: 'Users',
             users: [],
         };
     },
