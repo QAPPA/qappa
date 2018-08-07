@@ -11,6 +11,15 @@
             is-nav>
             <b-navbar-nav>
                 <b-nav-item to="/">Home</b-nav-item>
+                <b-nav-item-dropdown
+                    text="Projects"
+                    right>
+                    <b-dropdown-item
+                        v-if="admin"
+                        to="/admin/projects/create">
+                        Create new project
+                    </b-dropdown-item>
+                </b-nav-item-dropdown>
                 <template v-if="admin">
                     <b-nav-item-dropdown
                         text="Users"

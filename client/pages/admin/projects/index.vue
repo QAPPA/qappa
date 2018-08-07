@@ -3,7 +3,7 @@
         <app-breadcrumb />
         <b-row>
             <b-col>
-                <h1>Welcome, admin</h1>
+                <h1>Project</h1>
             </b-col>
         </b-row>
     </div>
@@ -16,11 +16,10 @@
                 title: this.pageTitle
             };
         },
-        middleware: 'admin',
         data() {
             return {
-                pageTitle: 'Admin'
+                pageTitle: 'Projects'
             };
-        }
+        },
     };
 </script>

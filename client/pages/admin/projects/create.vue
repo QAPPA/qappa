@@ -3,7 +3,7 @@
         <app-breadcrumb />
         <b-row>
             <b-col>
-                <h1>Users hub</h1>
+                <h1>Project create</h1>
             </b-col>
         </b-row>
     </div>
@@ -19,8 +19,8 @@ export default {
     middleware: 'admin',
     data() {
         return {
-            pageTitle: 'Users'
+            pageTitle: 'Create a project'
         };
-    }
+    },
 };
 </script>

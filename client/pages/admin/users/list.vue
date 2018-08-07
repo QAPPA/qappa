@@ -47,7 +47,7 @@ export default {
     middleware: 'admin',
     data() {
         return {
-            pageTitle: 'Users',
+            pageTitle: 'List all users',
             users: [],
         };
     },

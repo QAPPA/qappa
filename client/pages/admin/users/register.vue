@@ -68,7 +68,7 @@ export default {
     middleware: 'admin',
     data() {
         return {
-            pageTitle: 'Register',
+            pageTitle: 'Register new user',
             form: {
                 name: '',
                 surname: '',
