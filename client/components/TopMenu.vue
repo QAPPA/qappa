@@ -24,8 +24,14 @@
                     <b-nav-item-dropdown
                         text="Users"
                         right>
-                        <b-dropdown-item to="/admin/users/list">Show all users</b-dropdown-item>
+                        <b-dropdown-item to="/admin/users">Show all users</b-dropdown-item>
                         <b-dropdown-item to="/admin/users/register">Register new user</b-dropdown-item>
+                    </b-nav-item-dropdown>
+                    <b-nav-item-dropdown
+                        text="Team roles"
+                        right>
+                        <b-dropdown-item to="/admin/roles">Show all roles</b-dropdown-item>
+                        <b-dropdown-item to="/admin/roles/add">Add a new role</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </template>
             </b-navbar-nav>
