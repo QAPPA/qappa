@@ -4,6 +4,24 @@
         <b-row>
             <b-col>
                 <h1>New team role</h1>
+                <el-form
+                    ref="form"
+                    :model="form"
+                    :rules="rules"
+                    label-width="150px">
+                    <el-form-item
+                        label="Name"
+                        prop="name">
+                        <el-input
+                            v-model="form.name"
+                            :maxlength="100"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button
+                            type="primary"
+                            @click="handleSubmit">Add</el-button>
+                    </el-form-item>
+                </el-form>
             </b-col>
         </b-row>
     </div>
@@ -19,8 +37,42 @@
         middleware: 'admin',
         data() {
             return {
-                pageTitle: 'New team role'
+                pageTitle: 'New team role',
+                form: {
+                    name: ''
+                },
+                rules: {
+                    name: [
+                        {
+                            required: true,
+                            message: 'Please fill in role name.',
+                            trigger: 'change'
+                        },
+                        {
+                            max: 100,
+                            message: 'Role name must be less than 100 characters long.',
+                            trigger: 'change'
+                        }
+                    ]
+                }
             };
         },
+        methods: {
+            handleSubmit() {
+                this.$refs.form.validate((valid) => {
+                    if (!valid) {
+                        return;
+                    }
+                    // TODO: actual call to backend
+                    this.$router.push('/admin/roles');
+                    this.$notify({
+                        type: 'success',
+                        title: 'Success',
+                        message: 'New role added',
+                        position: 'bottom-right'
+                    });
+                });
+            }
+        }
     };
 </script>
