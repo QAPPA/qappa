@@ -11,13 +11,14 @@
             is-nav>
             <b-navbar-nav>
                 <b-nav-item to="/">Home</b-nav-item>
-                <b-nav-item-dropdown
-                    v-if="admin"
-                    text="Admin"
-                    right>
-                    <b-dropdown-item to="/admin/list">Show all users</b-dropdown-item>
-                    <b-dropdown-item to="/admin/register">Register new user</b-dropdown-item>
-                </b-nav-item-dropdown>
+                <template v-if="admin">
+                    <b-nav-item-dropdown
+                        text="Users"
+                        right>
+                        <b-dropdown-item to="/admin/users/list">Show all users</b-dropdown-item>
+                        <b-dropdown-item to="/admin/users/register">Register new user</b-dropdown-item>
+                    </b-nav-item-dropdown>
+                </template>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-text><strong>Logged user: </strong></b-nav-text>
