@@ -65,6 +65,7 @@ export default {
             title: this.pageTitle
         };
     },
+    middleware: 'admin',
     data() {
         return {
             pageTitle: 'Register',

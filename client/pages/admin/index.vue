@@ -16,6 +16,7 @@
                 title: this.pageTitle
             };
         },
+        middleware: 'admin',
         data() {
             return {
                 pageTitle: 'Admin page'
