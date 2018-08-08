@@ -114,7 +114,7 @@
         },
         data() {
             return {
-                pageTitle: 'Create a project',
+                pageTitle: 'Edit project',
                 deadlineOptions: {
                     disabledDate(time) {
                         const yesterday = Date.now() - (24 * 60 * 60 * 1000);
