@@ -29,6 +29,11 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item
+                        label="Opened"
+                        prop="open">
+                        <el-switch v-model="form.open"></el-switch>
+                    </el-form-item>
+                    <el-form-item
                         label="Responsible person"
                         prop="responsibleUserId">
                         <el-select
@@ -87,7 +92,7 @@
                     <el-form-item>
                         <el-button
                             type="primary"
-                            @click="handleSubmit">Create</el-button>
+                            @click="handleSubmit">Submit</el-button>
                     </el-form-item>
                 </el-form>
             </b-col>
@@ -133,6 +138,13 @@
                         {
                             required: true,
                             message: 'Please fill in project deadline.',
+                            trigger: 'change'
+                        }
+                    ],
+                    open: [
+                        {
+                            required: true,
+                            message: 'Please select project status.',
                             trigger: 'change'
                         }
                     ],
@@ -206,6 +218,7 @@
                 id: 0,
                 name: 'Project 1',
                 deadline: '27/08/2018',
+                open: true,
                 responsibleUser: {
                     id: 0,
                     name: 'Carl',
@@ -274,6 +287,7 @@
                 { id: 1, name: 'Developer' },
                 { id: 2, name: 'Analyst' }
             ];
+            data.form.open = response.open;
             data.form.responsibleUserId = response.responsibleUser.id;
             data.form.users = response.users.map(member => {
                 const userId = member.user.id;
@@ -323,6 +337,7 @@
                     console.log('form.id', this.form.id);
                     console.log('form.name', this.form.name);
                     console.log('form.deadline', this.form.deadline);
+                    console.log('form.open', this.form.open);
                     console.log('form.responsibleUserId', this.form.responsibleUserId);
                     console.log('form.users', JSON.stringify(this.form.users, null, 4));
                     alert('Project edited');
