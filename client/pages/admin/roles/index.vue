@@ -19,6 +19,20 @@
                         prop="name"
                         label="Name">
                     </el-table-column>
+                    <el-table-column
+                        label="Operations">
+                        <template slot-scope="scope">
+                            <nuxt-link :to="`/admin/roles/edit/${scope.row.id}`">
+                                <span class="el-icon-edit"></span>
+                            </nuxt-link>
+                            <el-button
+                                class="deleteButton"
+                                type="text"
+                                @click="handleRoleDelete(scope.row.id)">
+                                <span class="el-icon-delete"></span>
+                            </el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </b-col>
         </b-row>
@@ -36,8 +50,45 @@ export default {
     data() {
         return {
             pageTitle: 'Team roles',
-            roles: []
+            roles: [
+                {
+                    id: 0,
+                    name: 'Tester'
+                },
+                {
+                    id: 1,
+                    name: 'Developer'
+                },
+                {
+                    id: 2,
+                    name: 'Analyst'
+                }
+            ]
         };
+    },
+    methods: {
+        handleRoleDelete(id) {
+            this.$confirm('Are you sure you want to delete this role?', {
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonClass: 'el-button--danger'
+            }).then(() => {
+                console.log('Delete role id', id);
+                this.roles = this.roles.filter(role => role.id !== id);
+            });
+        }
     }
 };
 </script>
+
+<style lang="sass" scoped>
+    span.el-icon-edit
+        color: orange
+        font-size: x-large
+    span.el-icon-delete
+        color: red
+        font-size: x-large
+    .deleteButton
+        margin-left: 10px
+        padding: 0
+</style>
