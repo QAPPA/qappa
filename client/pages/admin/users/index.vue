@@ -48,18 +48,20 @@ export default {
     data() {
         return {
             pageTitle: 'Users',
-            users: [],
         };
     },
-    async mounted() {
-        const { users } = await this.$axios.$get('/users');
-        this.users = users.map(user => ({
+    async asyncData({ app }) {
+        const { users } = await app.$axios.$get('/users');
+        const mappedUsers = users.map(user => ({
             id: user.id,
             name: user.name,
             surname: user.surname,
             email: user.email,
             admin: user.admin.toString()
         }));
+        return {
+            users: mappedUsers
+        };
     }
 };
 </script>

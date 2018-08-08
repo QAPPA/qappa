@@ -49,21 +49,27 @@ export default {
     middleware: 'admin',
     data() {
         return {
-            pageTitle: 'Team roles',
-            roles: [
-                {
-                    id: 0,
-                    name: 'Tester'
-                },
-                {
-                    id: 1,
-                    name: 'Developer'
-                },
-                {
-                    id: 2,
-                    name: 'Analyst'
-                }
-            ]
+            pageTitle: 'Team roles'
+        };
+    },
+    async asyncData() {
+        // TODO: API call for roles
+        const roles = [
+            {
+                id: 0,
+                name: 'Tester'
+            },
+            {
+                id: 1,
+                name: 'Developer'
+            },
+            {
+                id: 2,
+                name: 'Analyst'
+            }
+        ];
+        return {
+            roles
         };
     },
     methods: {

@@ -41,11 +41,7 @@
         },
         data() {
             return {
-                pageTitle: 'New team role',
-                form: {
-                    id: -1,
-                    name: ''
-                },
+                pageTitle: 'Edit team role',
                 rules: {
                     name: [
                         {
@@ -62,14 +58,18 @@
                 }
             };
         },
-        mounted() {
-            // TODO: API call for role detail using id: this.$route.params.id
+        async asyncData({ params }) {
+            // TODO: API call for role detail using id: params.id
             const response = {
                 id: 0,
                 name: 'Tester',
             };
-            this.form.id = response.id;
-            this.form.name = response.name;
+            return {
+                form: {
+                    id: response.id,
+                    name: response.name
+                }
+            };
         },
         methods: {
             handleSubmit() {

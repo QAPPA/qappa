@@ -106,16 +106,6 @@ export default {
     data() {
         return {
             pageTitle: 'Create a project',
-            users: [
-                { id: 0, name: 'Carl' },
-                { id: 1, name: 'John' },
-                { id: 2, name: 'Jessica' }
-            ],
-            roles: [
-                { id: 0, name: 'Tester' },
-                { id: 1, name: 'Developer' },
-                { id: 2, name: 'Analyst' }
-            ],
             form: {
                 name: '',
                 deadline: '', // in the format dd/MM/yyyy !
@@ -194,6 +184,23 @@ export default {
                     }
                 ]
             }
+        };
+    },
+    async asyncData() {
+        // TODO: API calls for users and roles
+        const users = [
+            { id: 0, name: 'Carl' },
+            { id: 1, name: 'John' },
+            { id: 2, name: 'Jessica' }
+        ];
+        const roles = [
+            { id: 0, name: 'Tester' },
+            { id: 1, name: 'Developer' },
+            { id: 2, name: 'Analyst' }
+        ];
+        return {
+            users,
+            roles
         };
     },
     computed: {

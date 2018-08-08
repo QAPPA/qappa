@@ -64,13 +64,12 @@
         },
         data() {
             return {
-                pageTitle: 'Projects',
-                projects: [],
+                pageTitle: 'Projects'
             };
         },
-        mounted() {
-            // simulated API call, probably not accurate, depicting mostly the data transformation
-            const data = [
+        async asyncData() {
+            // TODO: simulated API call, probably not accurate, depicting mostly the data transformation
+            const response = [
                 {
                     id: 0,
                     name: 'Project 1',
@@ -139,7 +138,7 @@
                     ]
                 }
             ];
-            this.projects = data.map(project => {
+            const projects = response.map(project => {
                 const responsible = `${project.responsibleUser.name} ${project.responsibleUser.surname}`;
                 const team = project.users.map(member => {
                    const name = `${member.user.name} ${member.user.surname}`;
@@ -154,6 +153,9 @@
                     team
                 };
             });
+            return {
+                projects
+            };
         },
         methods: {
             handleProjectDelete(id) {
