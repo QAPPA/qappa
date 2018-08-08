@@ -58,10 +58,11 @@
                                     @change="handlePersonChange"
                                     @clear="handlePersonClear(index)">
                                     <el-option
-                                        v-for="user in availableUsers"
+                                        v-for="user in userSelectOptions"
                                         :key="user.id"
                                         :label="user.name"
-                                        :value="user.id">
+                                        :value="user.id"
+                                        :disabled="user.disabled">
                                     </el-option>
                                 </el-select>
                             </b-col>
@@ -196,8 +197,19 @@ export default {
         };
     },
     computed: {
+        userSelectOptions() {
+            // returns all users, but those that are used have disabled flag set to true
+            return this.users.map(user => {
+                const isUsed = this.form.users.some(formUser => formUser.userId === user.id);
+                return {
+                    id: user.id,
+                    name: user.name,
+                    disabled: isUsed
+                };
+            });
+        },
         availableUsers() {
-            // filter out users that are in this.form.users (if user.id is different from every this.form.users[x].userId)
+            // returns only those users that have not been used
             return this.users.filter(user => this.form.users.every(formUser => formUser.userId !== user.id));
         }
     },
