@@ -10,6 +10,12 @@ export class Project {
     @Column({ length: 100 })
     name: string;
 
+    @Column({ default: true })
+    open: boolean;
+
+    @Column('date')
+    deadline: Date;
+
     @OneToMany(type => ProjectUser, projectUser => projectUser.project)
     users: ProjectUser[];
 
