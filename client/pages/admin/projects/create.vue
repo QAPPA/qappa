@@ -24,8 +24,8 @@
                             :picker-options="deadlineOptions"
                             type="date"
                             placeholder="Pick a date"
-                            format="dd/MM/yyyy"
-                            value-format="dd/MM/yyyy">
+                            format="dd.MM.yyyy"
+                            value-format="yyyy-MM-dd">
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item
@@ -108,7 +108,7 @@ export default {
             pageTitle: 'Create a project',
             form: {
                 name: '',
-                deadline: '', // in the format dd/MM/yyyy !
+                deadline: '',
                 responsibleUserId: '',
                 users: [
                     {

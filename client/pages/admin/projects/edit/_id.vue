@@ -24,8 +24,8 @@
                             :picker-options="deadlineOptions"
                             type="date"
                             placeholder="Pick a date"
-                            format="dd/MM/yyyy"
-                            value-format="dd/MM/yyyy">
+                            format="dd.MM.yyyy"
+                            value-format="yyyy-MM-dd">
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item
@@ -217,7 +217,7 @@
             const response = {
                 id: 0,
                 name: 'Project 1',
-                deadline: '27/08/2018',
+                deadline: '2018-08-27',
                 open: true,
                 responsibleUser: {
                     id: 0,
