@@ -29,6 +29,21 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item
+                        label="Responsible person"
+                        prop="responsibleUserId">
+                        <el-select
+                            v-model="form.responsibleUserId"
+                            clearable
+                            placeholder="Select a person">
+                            <el-option
+                                v-for="user in users"
+                                :key="user.id"
+                                :label="user.name"
+                                :value="user.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item
                         label="Team members"
                         prop="users">
                         <b-row
@@ -103,6 +118,7 @@ export default {
             form: {
                 name: '',
                 deadline: '', // in the format dd/MM/yyyy !
+                responsibleUserId: '',
                 users: [
                     {
                         userId: '',
@@ -133,6 +149,13 @@ export default {
                     {
                         required: true,
                         message: 'Please fill in project deadline.',
+                        trigger: 'change'
+                    }
+                ],
+                responsibleUserId: [
+                    {
+                        required: true,
+                        message: 'Please select a responsible person for this project.',
                         trigger: 'change'
                     }
                 ],
@@ -208,6 +231,7 @@ export default {
                 console.log('Calling API with');
                 console.log('form.name', this.form.name);
                 console.log('form.deadline', this.form.deadline);
+                console.log('form.responsibleUserId', this.form.responsibleUserId);
                 console.log('form.users', this.form.users);
                 alert('Project created');
             });
