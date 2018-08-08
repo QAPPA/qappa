@@ -35,6 +35,20 @@
                         prop="team"
                         label="Team members">
                     </el-table-column>
+                    <el-table-column
+                        label="Operations">
+                        <template slot-scope="scope">
+                            <nuxt-link :to="`/admin/projects/edit/${scope.row.id}`">
+                                <span class="el-icon-edit"></span>
+                            </nuxt-link>
+                            <el-button
+                                class="deleteButton"
+                                type="text"
+                                @click="handleProjectDelete(scope.row.id)">
+                                <span class="el-icon-delete"></span>
+                            </el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </b-col>
         </b-row>
@@ -140,6 +154,30 @@
                     team
                 };
             });
+        },
+        methods: {
+            handleProjectDelete(id) {
+                this.$confirm('Are you sure you want to delete this project?', {
+                    type: 'warning',
+                    confirmButtonText: 'Delete',
+                    confirmButtonClass: 'el-button--danger'
+                }).then(() => {
+                    console.log('Delete project id', id);
+                    this.projects = this.projects.filter(project => project.id !== id);
+                });
+            }
         }
     };
 </script>
+
+<style lang="sass" scoped>
+    span.el-icon-edit
+        color: orange
+        font-size: x-large
+    span.el-icon-delete
+        color: red
+        font-size: x-large
+    .deleteButton
+        margin-left: 10px
+        padding: 0
+</style>
