@@ -25,8 +25,8 @@ const projectCreateSchema = {
         userId: Joi.number().min(0).required(),
         roleIds: Joi.array().items(
             Joi.number().min(0)
-        ).min(1).required()
-    }).min(1).required()
+        ).min(1).unique().required()
+    }).min(1).unique('userId').required()
 };
 
 const projectEditSchema = {

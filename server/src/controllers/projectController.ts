@@ -1,5 +1,12 @@
 import { Request, Response, Router } from 'express';
+import * as _ from 'lodash';
+import { getRepository } from 'typeorm';
 import { admin } from '../middleware/auth';
+import { validateCreate, validateEdit } from '../utils/validations/project';
+import { User } from '../entities/User';
+import { Project } from '../entities/Project';
+import { TeamRole } from '../entities/TeamRole';
+import { ProjectUser } from '../entities/ProjectUser';
 
 const router = Router();
 
@@ -9,8 +16,61 @@ router.get('/', admin, (req: Request, res: Response) => {
 });
 
 // add new
-router.post('/', admin, (req: Request, res: Response) => {
+router.post('/', admin, async (req: Request, res: Response) => {
+    const { error, value: validated } = validateCreate(req.body);
+    if (error) {
+        return res.status(400).send({ message: 'Request has invalid body' });
+    }
+    // verify mentioned role and user IDs if they exist
+    // they *should* be already unique (Joi) but that hasn't been tested yet
+    const userRepository = getRepository(User);
+    const projectRepository = getRepository(Project);
+    const projectUserRepository = getRepository(ProjectUser);
+    const roleRepository = getRepository(TeamRole);
 
+    const responsibleUser = await userRepository.findOne(validated.responsibleUserId);
+    if (!responsibleUser) {
+        return res.status(400).send({ message: 'Person responsible for the project doesn\'t exist' });
+    }
+    const userPromises = validated.users.map(async user => await userRepository.findOne(user.userId));
+    let users;
+    try {
+        users = await Promise.all(userPromises);
+    } catch {
+        return res.status(400).send({ message: 'One or more people participating in the project don\'t exist' });
+    }
+    // roleIds are unique on their own but not all together
+    // first, map users[] to their roleIds[], resulting in type number[][] like [[1, 2], [2], [3]]
+    // lodash flattens it to [1, 2, 2, 3] and picks only unique values (no need for comparator since it's plain numbers)
+    const uniqueRoleIds = _.uniq(_.flatten(validated.users.map(user => user.roleIds)));
+    const rolePromises = uniqueRoleIds.map(async id => await roleRepository.findOne(id));
+    let roles;
+    try {
+        roles = await Promise.all(rolePromises);
+    } catch {
+        return res.status(400).send({ message: 'One or more used team roles don\'t exist' });
+    }
+    // all users and roles exist, finally assemble the project
+    const project = new Project();
+    project.name = validated.name;
+    project.deadline = new Date(validated.deadline);
+    project.open = true;
+    project.responsibleUser = responsibleUser;
+    const savedProject = await projectRepository.save(project);
+    // typeorm doesn't seem to handle creating nested objects (creating whole project.users[]) and saving all at once
+    // so additionally add users to the project with their roles
+    const projectUserPromises = validated.users.map(async (validatedUser) => {
+        const user = users.find(u => u.id === validatedUser.userId);
+        const userRoles = validatedUser.roleIds.map(roleId => roles.find(r => r.id === roleId));
+        const projectUser = new ProjectUser();
+        projectUser.user = user;
+        projectUser.project = savedProject;
+        projectUser.roles = userRoles;
+        await projectUserRepository.save(projectUser);
+    });
+    await Promise.all(projectUserPromises);
+    // TODO: figure out what to send in response to avoid circular references in JSON
+    return res.sendStatus(200);
 });
 
 // detail
