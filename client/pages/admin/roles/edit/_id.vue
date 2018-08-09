@@ -42,6 +42,10 @@
         data() {
             return {
                 pageTitle: 'Edit team role',
+                form: {
+                    id: '',
+                    name: ''
+                },
                 rules: {
                     name: [
                         {

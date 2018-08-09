@@ -115,6 +115,31 @@
         data() {
             return {
                 pageTitle: 'Edit project',
+                roles: [
+                    {
+                        id: '',
+                        name: ''
+                    }
+                ],
+                users: [
+                    {
+                        id: '',
+                        name: ''
+                    }
+                ],
+                form: {
+                    id: '',
+                    name: '',
+                    deadline: '',
+                    open: false,
+                    responsibleUserId: '',
+                    users: [
+                        {
+                            userId: '',
+                            roleIds: []
+                        }
+                    ]
+                },
                 deadlineOptions: {
                     disabledDate(time) {
                         const yesterday = Date.now() - (24 * 60 * 60 * 1000);

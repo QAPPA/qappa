@@ -96,7 +96,17 @@
         },
         data() {
             return {
-                pageTitle: 'Projects'
+                pageTitle: 'Projects',
+                projects: [
+                    {
+                        id: '',
+                        name: '',
+                        deadline: '',
+                        open: false,
+                        responsible: '',
+                        team: ''
+                    }
+                ]
             };
         },
         async asyncData() {

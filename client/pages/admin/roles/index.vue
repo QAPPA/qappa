@@ -49,7 +49,13 @@ export default {
     middleware: 'admin',
     data() {
         return {
-            pageTitle: 'Team roles'
+            pageTitle: 'Team roles',
+            roles: [
+                {
+                    id: '',
+                    name: ''
+                }
+            ]
         };
     },
     async asyncData({ app }) {

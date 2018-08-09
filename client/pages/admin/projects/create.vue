@@ -106,6 +106,18 @@ export default {
     data() {
         return {
             pageTitle: 'Create a project',
+            roles: [
+                {
+                    id: '',
+                    name: ''
+                }
+            ],
+            users: [
+                {
+                    id: '',
+                    name: ''
+                }
+            ],
             form: {
                 name: '',
                 deadline: '',

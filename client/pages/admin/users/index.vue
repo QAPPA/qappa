@@ -48,6 +48,15 @@ export default {
     data() {
         return {
             pageTitle: 'Users',
+            users: [
+                {
+                    id: '',
+                    name: '',
+                    surname: '',
+                    email: '',
+                    admin: ''
+                }
+            ]
         };
     },
     async asyncData({ app }) {
