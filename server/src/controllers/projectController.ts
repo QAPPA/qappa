@@ -11,8 +11,35 @@ import { ProjectUser } from '../entities/ProjectUser';
 const router = Router();
 
 // list all
-router.get('/', admin, (req: Request, res: Response) => {
-
+router.get('/', admin, async (req: Request, res: Response) => {
+    const repository = getRepository(Project);
+    const all = await repository.find({
+        relations: ['responsibleUser', 'users', 'users.roles', 'users.user']
+    });
+    const projects = all.map((project) => {
+        const id = project.id;
+        const name = project.name;
+        const deadline = project.deadline;
+        const open = project.open;
+        const responsibleUser = _.pick(project.responsibleUser, ['id', 'name', 'surname']);
+        const users = project.users.map((projectUser) => {
+            const user = _.pick(projectUser.user, ['id', 'name', 'surname']);
+            const roles = projectUser.roles.map(role => _.pick(role, ['id', 'name']));
+            return {
+                user,
+                roles
+            };
+        });
+        return {
+            id,
+            name,
+            deadline,
+            open,
+            responsibleUser,
+            users
+        };
+    });
+    return res.status(200).send(projects);
 });
 
 // add new
