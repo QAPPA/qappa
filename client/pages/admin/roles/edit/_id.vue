@@ -19,7 +19,7 @@
                     <el-form-item>
                         <el-button
                             type="primary"
-                            @click="handleSubmit">Add</el-button>
+                            @click="handleSubmit">Submit</el-button>
                     </el-form-item>
                 </el-form>
             </b-col>
@@ -58,25 +58,19 @@
                 }
             };
         },
-        async asyncData({ app, params }) {
-            app.$axios
-                .$get(`/roles/${params.id}`)
-                .then(response => {
-                    return {
-                        form: {
-                            id: response.id,
-                            name: response.name
-                        }
-                    };
-                }).catch(error => {
-                    app.$router.push('/admin/roles');
-                    app.$notify({
-                        type: 'error',
-                        title: 'Error',
-                        message: error.response.data.message,
-                        position: 'bottom-right'
-                    });
+        async asyncData({ app, params, redirect }) {
+            try {
+                const response = await app.$axios.$get(`/roles/${params.id}`);
+                return {
+                    form: {
+                        ...response
+                    }
+                };
+            } catch (error) {
+                return redirect('/admin/roles', {
+                    error: error.response.data.message
                 });
+            }
         },
         methods: {
             handleSubmit() {
@@ -84,13 +78,23 @@
                     if (!valid) {
                         return;
                     }
-                    // TODO: actual call to backend
-                    this.$router.push('/admin/roles');
-                    this.$notify({
-                        type: 'success',
-                        title: 'Success',
-                        message: 'Role updated',
-                        position: 'bottom-right'
+                    this.$axios.$put(`/roles/${this.form.id}`, {
+                        name: this.form.name
+                    }).then(() => {
+                        this.$router.push('/admin/roles');
+                        this.$notify({
+                            type: 'success',
+                            title: 'Success',
+                            message: 'Role updated',
+                            position: 'bottom-right'
+                        });
+                    }).catch(error => {
+                        this.$notify({
+                            type: 'error',
+                            title: 'Error',
+                            message: error.response.data.message,
+                            position: 'bottom-right'
+                        });
                     });
                 });
             }

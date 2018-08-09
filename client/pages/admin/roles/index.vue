@@ -58,6 +58,17 @@ export default {
             roles
         };
     },
+    mounted() {
+        const { error } = this.$route.query;
+        if (error) {
+            this.$notify({
+                type: 'error',
+                title: 'Error',
+                message: error,
+                position: 'bottom-right'
+            });
+        }
+    },
     methods: {
         handleRoleDelete(id) {
             this.$confirm('Are you sure you want to delete this role?', {
@@ -65,8 +76,23 @@ export default {
                 confirmButtonText: 'Delete',
                 confirmButtonClass: 'el-button--danger'
             }).then(() => {
-                console.log('Delete role id', id);
-                this.roles = this.roles.filter(role => role.id !== id);
+                this.$axios.$delete(`/roles/${id}`)
+                    .then(response => {
+                        this.$notify({
+                            type: 'success',
+                            title: 'Success',
+                            message: response.message,
+                            position: 'bottom-right'
+                        });
+                        this.roles = this.roles.filter(role => role.id !== id);
+                    }).catch(error => {
+                        this.$notify({
+                            type: 'error',
+                            title: 'Error',
+                            message: error.response.data.message,
+                            position: 'bottom-right'
+                        });
+                    });
             });
         }
     }

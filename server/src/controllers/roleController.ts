@@ -47,7 +47,7 @@ router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
     }
     const { error, value: validated } = validate(req.body);
     if (error) {
-        return res.status(400).send({ message: 'Name of the role is required '});
+        return res.status(400).send({ message: 'Name of the role is required ' });
     }
     role.name = validated.name;
     const saved = await repository.save(role);
