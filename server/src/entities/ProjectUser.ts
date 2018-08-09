@@ -5,10 +5,10 @@ import { TeamRole } from './TeamRole';
 
 @Entity({ name: 'project_users' })
 export class ProjectUser {
-    @ManyToOne(type => User, user => user.projects, { primary: true })
+    @ManyToOne(type => User, user => user.projects, { primary: true, onDelete: 'CASCADE' })
     user: User;
 
-    @ManyToOne(type => Project, project => project.users, { primary: true })
+    @ManyToOne(type => Project, project => project.users, { primary: true, onDelete: 'CASCADE' })
     project: Project;
 
     @ManyToMany(type => TeamRole, teamRole => teamRole.users)
