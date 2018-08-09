@@ -52,22 +52,8 @@ export default {
             pageTitle: 'Team roles'
         };
     },
-    async asyncData() {
-        // TODO: API call for roles
-        const roles = [
-            {
-                id: 0,
-                name: 'Tester'
-            },
-            {
-                id: 1,
-                name: 'Developer'
-            },
-            {
-                id: 2,
-                name: 'Analyst'
-            }
-        ];
+    async asyncData({ app }) {
+        const roles = await app.$axios.$get('/roles');
         return {
             roles
         };

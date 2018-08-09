@@ -58,18 +58,25 @@
                 }
             };
         },
-        async asyncData({ params }) {
-            // TODO: API call for role detail using id: params.id
-            const response = {
-                id: 0,
-                name: 'Tester',
-            };
-            return {
-                form: {
-                    id: response.id,
-                    name: response.name
-                }
-            };
+        async asyncData({ app, params }) {
+            app.$axios
+                .$get(`/roles/${params.id}`)
+                .then(response => {
+                    return {
+                        form: {
+                            id: response.id,
+                            name: response.name
+                        }
+                    };
+                }).catch(error => {
+                    app.$router.push('/admin/roles');
+                    app.$notify({
+                        type: 'error',
+                        title: 'Error',
+                        message: error.response.data.message,
+                        position: 'bottom-right'
+                    });
+                });
         },
         methods: {
             handleSubmit() {

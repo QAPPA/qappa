@@ -63,13 +63,23 @@
                     if (!valid) {
                         return;
                     }
-                    // TODO: actual call to backend
-                    this.$router.push('/admin/roles');
-                    this.$notify({
-                        type: 'success',
-                        title: 'Success',
-                        message: 'New role added',
-                        position: 'bottom-right'
+                    this.$axios.$post('/roles', {
+                        name: this.form.name
+                    }).then(() => {
+                        this.$router.push('/admin/roles');
+                        this.$notify({
+                            type: 'success',
+                            title: 'Success',
+                            message: 'New role added',
+                            position: 'bottom-right'
+                        });
+                    }).catch(error => {
+                        this.$notify({
+                            type: 'error',
+                            title: 'Error',
+                            message: error.response.data.message,
+                            position: 'bottom-right'
+                        });
                     });
                 });
             }
