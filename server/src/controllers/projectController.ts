@@ -140,8 +140,15 @@ router.delete('/:id(\\d+)', admin, async (req: Request, res: Response) => {
 });
 
 // toggle state
-router.put('/:id(\\d+)/toggle', admin, (req: Request, res: Response) => {
-
+router.put('/:id(\\d+)/toggle', admin, async (req: Request, res: Response) => {
+    const repository = getRepository(Project);
+    const project = await repository.findOne(req.params.id);
+    if (!project) {
+        return res.status(404).send({ message: 'Project doesn\'t exist' });
+    }
+    project.open = !project.open;
+    await repository.save(project);
+    return res.status(200).send({ message: 'Project successfully toggled' });
 });
 
 export default router;
