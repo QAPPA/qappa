@@ -1,19 +1,22 @@
 import { Request, Response, Router } from 'express';
 import { getRepository } from 'typeorm';
 import { admin } from '../middleware/auth';
-import { validateCreate } from '../utils/validations/role';
+import { validate } from '../utils/validations/role';
 import { TeamRole } from '../entities/TeamRole';
 
 const router = Router();
 
 // list all
-router.get('/', admin, (req: Request, res: Response) => {
-
+router.get('/', admin, async (req: Request, res: Response) => {
+    const repository = getRepository(TeamRole);
+    const roles = await repository.find();
+    // TODO: will send users as well, if they're assigned?
+    res.status(200).send({ roles });
 });
 
 // add new
 router.post('/', admin, async (req: Request, res: Response) => {
-    const { error, value: validated } = validateCreate(req.body);
+    const { error, value: validated } = validate(req.body);
     if (error) {
         return res.status(400).send({ message: 'Name of the role is required' });
     }
@@ -25,18 +28,42 @@ router.post('/', admin, async (req: Request, res: Response) => {
 });
 
 // detail
-router.get('/:id(\\d+)', admin, (req: Request, res: Response) => {
-
+router.get('/:id(\\d+)', admin, async (req: Request, res: Response) => {
+    // regex in path should ensure id exists and is a number
+    const repository = getRepository(TeamRole);
+    const role = await repository.findOne({ id: req.params.id });
+    if (!role) {
+        return res.status(404).send({ message: 'Role doesn\'t exist' });
+    }
+    res.status(200).send({ ...role });
 });
 
 // edit
-router.put('/:id(\\d+)', admin, (req: Request, res: Response) => {
-
+router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
+    const repository = getRepository(TeamRole);
+    const role = await repository.findOne({ id: req.params.id });
+    if (!role) {
+        return res.status(404).send({ message: 'Role doesn\'t exist' });
+    }
+    const { error, value: validated } = validate(req.body);
+    if (error) {
+        return res.status(400).send({ message: 'Name of the role is required '});
+    }
+    role.name = validated.name;
+    const saved = await repository.save(role);
+    res.status(200).send({ ...saved });
 });
 
 // delete
-router.delete('/:id(\\d+)', admin, (req: Request, res: Response) => {
-
+router.delete('/:id(\\d+)', admin, async (req: Request, res: Response) => {
+    const repository = getRepository(TeamRole);
+    const role = await repository.findOne({ id: req.params.id });
+    if (!role) {
+        return res.status(404).send({ message: 'Role doesn\'t exist' });
+    }
+    await repository.delete(role.id);
+    // maybe return deleted role instead?
+    res.status(200).send({ message: 'Role was deleted successfully' });
 });
 
 export default router;

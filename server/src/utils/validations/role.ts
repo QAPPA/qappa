@@ -1,13 +1,13 @@
 import * as Joi from 'joi';
 
-interface RoleCreate {
+interface Role {
     name: string;
 }
 
-const createSchema = {
+const schema = {
     name: Joi.string().max(100).required()
 };
 
-export const validateCreate = (role: any): Joi.ValidationResult<RoleCreate> => {
-    return Joi.validate(role, createSchema);
+export const validate = (role: any): Joi.ValidationResult<Role> => {
+    return Joi.validate(role, schema);
 };
