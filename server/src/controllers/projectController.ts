@@ -129,8 +129,14 @@ router.put('/:id(\\d+)', admin, (req: Request, res: Response) => {
 });
 
 // delete
-router.delete('/:id(\\d+)', admin, (req: Request, res: Response) => {
-
+router.delete('/:id(\\d+)', admin, async (req: Request, res: Response) => {
+    const repository = getRepository(Project);
+    const project = await repository.findOne(req.params.id);
+    if (!project) {
+        return res.status(404).send({ message: 'Project doesn\'t exist' });
+    }
+    await repository.delete(project.id);
+    return res.status(200).send({ message: 'Project successfully deleted' });
 });
 
 // toggle state
