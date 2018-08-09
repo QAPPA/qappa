@@ -101,8 +101,26 @@ router.post('/', admin, async (req: Request, res: Response) => {
 });
 
 // detail
-router.get('/:id(\\d+)', admin, (req: Request, res: Response) => {
-
+router.get('/:id(\\d+)', admin, async (req: Request, res: Response) => {
+    const repository = getRepository(Project);
+    const found = await repository.findOne(req.params.id, {
+        relations: ['responsibleUser', 'users', 'users.user', 'users.roles']
+    });
+    if (!found) {
+        return res.status(404).send({ message: 'Project doesn\'t exist' });
+    }
+    const project = {
+        id: found.id,
+        name: found.name,
+        deadline: found.deadline,
+        open: found.open,
+        responsibleUserId: found.responsibleUser.id,
+        users: found.users.map(projectUser => ({
+            userId: projectUser.user.id,
+            roleIds: projectUser.roles.map(role => role.id)
+        }))
+    };
+    return res.status(200).send(project);
 });
 
 // edit

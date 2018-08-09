@@ -10,7 +10,6 @@ const router = Router();
 router.get('/', admin, async (req: Request, res: Response) => {
     const repository = getRepository(TeamRole);
     const roles = await repository.find();
-    // TODO: will send users as well, if they're assigned?
     res.status(200).send(roles);
 });
 

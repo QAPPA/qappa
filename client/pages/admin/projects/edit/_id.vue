@@ -244,54 +244,19 @@
                 name: 'Project 1',
                 deadline: '2018-08-27',
                 open: true,
-                responsibleUser: {
-                    id: 0,
-                    name: 'Carl',
-                    surname: 'Johnson'
-                },
+                responsibleUserId: 0,
                 users: [
                     {
-                        user: {
-                            id: 0,
-                            name: 'Carl',
-                            surname: 'Johnson'
-                        },
-                        roles: [
-                            {
-                                id: 0,
-                                name: 'Tester'
-                            },
-                            {
-                                id: 1,
-                                name: 'Developer'
-                            }
-                        ]
+                        userId: 0,
+                        roleIds: [0, 1]
                     },
                     {
-                        user: {
-                            id: 1,
-                            name: 'Jessica',
-                            surname: 'Mellow'
-                        },
-                        roles: [
-                            {
-                                id: 1,
-                                name: 'Developer'
-                            }
-                        ]
+                        userId: 1,
+                        roleIds: [1]
                     },
                     {
-                        user: {
-                            id: 2,
-                            name: 'John',
-                            surname: 'Carlson'
-                        },
-                        roles: [
-                            {
-                                id: 2,
-                                name: 'Analyst'
-                            }
-                        ]
+                        userId: 2,
+                        roleIds: [2]
                     },
                 ]
             };
@@ -301,27 +266,52 @@
 
             // construct available users
             // API calls
-            data.users = [
-                { id: 0, name: 'Carl' },
-                { id: 1, name: 'Jessica' },
-                { id: 2, name: 'John' },
-                { id: 3, name: 'Lucas' }
-            ];
+            const userResponse = {
+                users: [
+                    {
+                        id: 0,
+                        name: 'Carl',
+                        surname: 'Johnson',
+                        email: 'carl@qappa.net',
+                        admin: false,
+                    },
+                    {
+                        id: 1,
+                        name: 'Jessica',
+                        surname: 'Mellow',
+                        email: 'jessica@qappa.net',
+                        admin: false,
+                    },
+                    {
+                        id: 2,
+                        name: 'John',
+                        surname: 'Duke',
+                        email: 'john@qappa.net',
+                        admin: false,
+                    },
+                    {
+                        id: 3,
+                        name: 'Lucas',
+                        surname: 'Frowning',
+                        email: 'lucas@qappa.net',
+                        admin: false,
+                    }
+                ]
+            };
+            data.users = userResponse.users.map(user => ({
+                id: user.id,
+                name: `${user.name} ${user.surname}`
+            }));
+            // direct API call, returns exactly this format
             data.roles = [
                 { id: 0, name: 'Tester' },
                 { id: 1, name: 'Developer' },
                 { id: 2, name: 'Analyst' }
             ];
             data.form.open = response.open;
-            data.form.responsibleUserId = response.responsibleUser.id;
-            data.form.users = response.users.map(member => {
-                const userId = member.user.id;
-                const roleIds = member.roles.map(role => role.id);
-                return {
-                    userId,
-                    roleIds
-                };
-            });
+            data.form.responsibleUserId = response.responsibleUserId;
+            data.form.users = response.users;
+
             const availableUsers = data.users.filter(user => data.form.users.every(formUser => formUser.userId !== user.id));
             if (availableUsers.length > 0) {
                 data.form.users.push({
