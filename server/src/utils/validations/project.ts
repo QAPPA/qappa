@@ -13,7 +13,6 @@ interface ProjectCreate {
 }
 
 interface ProjectEdit extends ProjectCreate {
-    id: number;
     open: boolean;
 }
 
@@ -31,7 +30,6 @@ const projectCreateSchema = {
 
 const projectEditSchema = {
     ...projectCreateSchema,
-    id: Joi.number().min(0).required(),
     open: Joi.boolean().required()
 };
 

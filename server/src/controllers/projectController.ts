@@ -124,8 +124,66 @@ router.get('/:id(\\d+)', admin, async (req: Request, res: Response) => {
 });
 
 // edit
-router.put('/:id(\\d+)', admin, (req: Request, res: Response) => {
+router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
+    // largely similar to creating project
+    const { error, value: validated } = validateEdit(req.body);
+    if (error) {
+        return res.status(400).send({ message: 'Request has invalid body' });
+    }
+    // verify mentioned role and user IDs if they exist
+    // they *should* be already unique (Joi) but that hasn't been tested yet
+    const userRepository = getRepository(User);
+    const projectRepository = getRepository(Project);
+    const projectUserRepository = getRepository(ProjectUser);
+    const roleRepository = getRepository(TeamRole);
 
+    const project = await projectRepository.findOne(req.params.id);
+    if (!project) {
+        return res.status(404).send({ message: 'Project doesn\'t exist' });
+    }
+
+    const responsibleUser = await userRepository.findOne(validated.responsibleUserId);
+    if (!responsibleUser) {
+        return res.status(400).send({ message: 'Person responsible for the project doesn\'t exist' });
+    }
+    const userPromises = validated.users.map(async user => await userRepository.findOne(user.userId));
+    let users;
+    try {
+        users = await Promise.all(userPromises);
+    } catch {
+        return res.status(400).send({ message: 'One or more people participating in the project don\'t exist' });
+    }
+
+    const uniqueRoleIds = _.uniq(_.flatten(validated.users.map(user => user.roleIds)));
+    const rolePromises = uniqueRoleIds.map(async id => await roleRepository.findOne(id));
+    let roles;
+    try {
+        roles = await Promise.all(rolePromises);
+    } catch {
+        return res.status(400).send({ message: 'One or more used team roles don\'t exist' });
+    }
+
+    // update project data, as for the project members, remove them and re-add them to be sure
+    project.name = validated.name;
+    project.deadline = new Date(validated.deadline);
+    project.open = validated.open;
+    project.responsibleUser = responsibleUser;
+    const savedProject = await projectRepository.save(project);
+
+    await projectUserRepository.delete({ project });
+
+    const projectUserPromises = validated.users.map(async (validatedUser) => {
+        const user = users.find(u => u.id === validatedUser.userId);
+        const userRoles = validatedUser.roleIds.map(roleId => roles.find(r => r.id === roleId));
+        const projectUser = new ProjectUser();
+        projectUser.user = user;
+        projectUser.project = savedProject;
+        projectUser.roles = userRoles;
+        await projectUserRepository.save(projectUser);
+    });
+    await Promise.all(projectUserPromises);
+    // TODO: figure out what to send in response to avoid circular references in JSON
+    return res.status(200).send({ message: 'Project successfully updated' });
 });
 
 // delete
