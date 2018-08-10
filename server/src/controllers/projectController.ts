@@ -2,13 +2,43 @@ import { Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import { getRepository } from 'typeorm';
 import { admin } from '../middleware/auth';
-import { validateCreate, validateEdit } from '../utils/validations/project';
+import { ProjectCreateUser, validateCreate, validateEdit } from '../utils/validations/project';
 import { User } from '../entities/User';
 import { Project } from '../entities/Project';
 import { TeamRole } from '../entities/TeamRole';
 import { ProjectUser } from '../entities/ProjectUser';
 
 const router = Router();
+
+function findUsersOrFail(users: ProjectCreateUser[]): Promise<User[]> {
+    const userRepository = getRepository(User);
+    const userPromises = users.map(user => userRepository.findOne(user.userId));
+    return Promise.all(userPromises);
+}
+
+function findRolesOrFail(users: ProjectCreateUser[]): Promise<TeamRole[]> {
+    const roleRepository = getRepository(TeamRole);
+    // roleIds are unique on their own but not all together
+    // first, map users[] to their roleIds[], resulting in type number[][] like [[1, 2], [2], [3]]
+    // lodash flattens it to [1, 2, 2, 3] and picks only unique values (no need for comparator since it's plain numbers)
+    const uniqueRoleIds = _.uniq(_.flatten(users.map(user => user.roleIds)));
+    const rolePromises = uniqueRoleIds.map(id => roleRepository.findOne(id));
+    return Promise.all(rolePromises);
+}
+
+function addProjectUsers(members: ProjectCreateUser[], users: User[], roles: TeamRole[], project: Project): Promise<ProjectUser[]> {
+    const projectUserRepository = getRepository(ProjectUser);
+    const projectUserPromises = members.map(async (validatedUser) => {
+        const user = users.find(u => u.id === validatedUser.userId);
+        const userRoles = validatedUser.roleIds.map(roleId => roles.find(r => r.id === roleId));
+        const projectUser = new ProjectUser();
+        projectUser.user = user;
+        projectUser.project = project;
+        projectUser.roles = userRoles;
+        return projectUserRepository.save(projectUser);
+    });
+    return Promise.all(projectUserPromises);
+}
 
 // list all
 router.get('/', admin, async (req: Request, res: Response) => {
@@ -52,28 +82,21 @@ router.post('/', admin, async (req: Request, res: Response) => {
     // they *should* be already unique (Joi) but that hasn't been tested yet
     const userRepository = getRepository(User);
     const projectRepository = getRepository(Project);
-    const projectUserRepository = getRepository(ProjectUser);
-    const roleRepository = getRepository(TeamRole);
 
     const responsibleUser = await userRepository.findOne(validated.responsibleUserId);
     if (!responsibleUser) {
         return res.status(400).send({ message: 'Person responsible for the project doesn\'t exist' });
     }
-    const userPromises = validated.users.map(async user => await userRepository.findOne(user.userId));
     let users;
     try {
-        users = await Promise.all(userPromises);
+        users = await findUsersOrFail(validated.users);
     } catch {
         return res.status(400).send({ message: 'One or more people participating in the project don\'t exist' });
     }
-    // roleIds are unique on their own but not all together
-    // first, map users[] to their roleIds[], resulting in type number[][] like [[1, 2], [2], [3]]
-    // lodash flattens it to [1, 2, 2, 3] and picks only unique values (no need for comparator since it's plain numbers)
-    const uniqueRoleIds = _.uniq(_.flatten(validated.users.map(user => user.roleIds)));
-    const rolePromises = uniqueRoleIds.map(async id => await roleRepository.findOne(id));
+
     let roles;
     try {
-        roles = await Promise.all(rolePromises);
+        roles = await findRolesOrFail(validated.users);
     } catch {
         return res.status(400).send({ message: 'One or more used team roles don\'t exist' });
     }
@@ -86,16 +109,7 @@ router.post('/', admin, async (req: Request, res: Response) => {
     const savedProject = await projectRepository.save(project);
     // typeorm doesn't seem to handle creating nested objects (creating whole project.users[]) and saving all at once
     // so additionally add users to the project with their roles
-    const projectUserPromises = validated.users.map(async (validatedUser) => {
-        const user = users.find(u => u.id === validatedUser.userId);
-        const userRoles = validatedUser.roleIds.map(roleId => roles.find(r => r.id === roleId));
-        const projectUser = new ProjectUser();
-        projectUser.user = user;
-        projectUser.project = savedProject;
-        projectUser.roles = userRoles;
-        await projectUserRepository.save(projectUser);
-    });
-    await Promise.all(projectUserPromises);
+    await addProjectUsers(validated.users, users, roles, savedProject);
     // TODO: figure out what to send in response to avoid circular references in JSON
     return res.sendStatus(200);
 });
@@ -135,7 +149,6 @@ router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
     const userRepository = getRepository(User);
     const projectRepository = getRepository(Project);
     const projectUserRepository = getRepository(ProjectUser);
-    const roleRepository = getRepository(TeamRole);
 
     const project = await projectRepository.findOne(req.params.id);
     if (!project) {
@@ -146,19 +159,16 @@ router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
     if (!responsibleUser) {
         return res.status(400).send({ message: 'Person responsible for the project doesn\'t exist' });
     }
-    const userPromises = validated.users.map(async user => await userRepository.findOne(user.userId));
     let users;
     try {
-        users = await Promise.all(userPromises);
+        users = await findUsersOrFail(validated.users);
     } catch {
         return res.status(400).send({ message: 'One or more people participating in the project don\'t exist' });
     }
 
-    const uniqueRoleIds = _.uniq(_.flatten(validated.users.map(user => user.roleIds)));
-    const rolePromises = uniqueRoleIds.map(async id => await roleRepository.findOne(id));
     let roles;
     try {
-        roles = await Promise.all(rolePromises);
+        roles = await findRolesOrFail(validated.users);
     } catch {
         return res.status(400).send({ message: 'One or more used team roles don\'t exist' });
     }
@@ -172,16 +182,7 @@ router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
 
     await projectUserRepository.delete({ project });
 
-    const projectUserPromises = validated.users.map(async (validatedUser) => {
-        const user = users.find(u => u.id === validatedUser.userId);
-        const userRoles = validatedUser.roleIds.map(roleId => roles.find(r => r.id === roleId));
-        const projectUser = new ProjectUser();
-        projectUser.user = user;
-        projectUser.project = savedProject;
-        projectUser.roles = userRoles;
-        await projectUserRepository.save(projectUser);
-    });
-    await Promise.all(projectUserPromises);
+    await addProjectUsers(validated.users, users, roles, savedProject);
     // TODO: figure out what to send in response to avoid circular references in JSON
     return res.status(200).send({ message: 'Project successfully updated' });
 });

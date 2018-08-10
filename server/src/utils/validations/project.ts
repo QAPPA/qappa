@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-interface ProjectCreateUser {
+export interface ProjectCreateUser {
     userId: number;
     roleIds: number[];
 }
