@@ -112,7 +112,7 @@ router.post('/', admin, async (req: Request, res: Response) => {
     // so additionally add users to the project with their roles
     await addProjectUsers(validated.members, users, roles, savedProject);
     // TODO: figure out what to send in response to avoid circular references in JSON
-    return res.sendStatus(200);
+    return res.status(200).send({ message: 'Project successfully created' });
 });
 
 // detail

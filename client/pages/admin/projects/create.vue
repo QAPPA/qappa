@@ -55,7 +55,6 @@
                                     v-model="member.userId"
                                     clearable
                                     placeholder="Select a person"
-                                    @change="handlePersonChange"
                                     @clear="handlePersonClear(index)">
                                     <el-option
                                         v-for="user in userSelectOptions"
@@ -72,8 +71,7 @@
                                     v-model="member.roleIds"
                                     class="roleSelect"
                                     multiple
-                                    placeholder="Select roles"
-                                    @change="handlePersonChange">
+                                    placeholder="Select roles">
                                     <el-option
                                         v-for="role in roles"
                                         :key="role.id"
@@ -85,6 +83,13 @@
                         </b-row>
                     </el-form-item>
                     <el-form-item>
+                        <el-button
+                            v-if="form.members.length < users.length"
+                            type="primary"
+                            plain
+                            @click="addNewRow">
+                            Add member
+                        </el-button>
                         <el-button
                             type="primary"
                             @click="handleSubmit">Create</el-button>
@@ -179,15 +184,11 @@ export default {
                     },
                     {
                         validator: (rule, value, callback) => {
-                            // if we have another user available, there's an empty row, that's why we need to limit the loop
-                            // validates all selected users so they have at least one role
-                            const limit = (this.availableUsers.length === 0) ? value.length : value.length - 1;
-                            for (let i = 0; i < limit; i++) {
-                                const member = value[i];
+                            value.forEach(member => {
                                 if (member.userId === '' || member.roleIds.length === 0) {
                                     return callback(new Error(rule.message));
                                 }
-                            }
+                            });
                             callback();
                         },
                         required: true,
@@ -198,18 +199,13 @@ export default {
             }
         };
     },
-    async asyncData() {
-        // TODO: API calls for users and roles
-        const users = [
-            { id: 0, name: 'Carl' },
-            { id: 1, name: 'John' },
-            { id: 2, name: 'Jessica' }
-        ];
-        const roles = [
-            { id: 0, name: 'Tester' },
-            { id: 1, name: 'Developer' },
-            { id: 2, name: 'Analyst' }
-        ];
+    async asyncData({ app }) {
+        const userResponse = await app.$axios.$get('/users');
+        const users = userResponse.users.map(user => ({
+            id: user.id,
+            name: `${user.name} ${user.surname}`
+        }));
+        const roles = await app.$axios.$get('/roles');
         return {
             users,
             roles
@@ -233,10 +229,13 @@ export default {
         }
     },
     methods: {
-        handlePersonChange() {
+        addNewRow() {
             const lastMember = this.form.members[this.form.members.length - 1];
-            // if last user in array is picked and there are more available users, add another row
-            if (lastMember.userId !== '' && this.availableUsers.length > 0) {
+            if (lastMember.userId === '' || lastMember.roleIds.length === 0) {
+                this.$message.error('Please first select last person and his roles before adding a new person');
+                return;
+            }
+            if (this.availableUsers.length > 0) {
                 this.form.members.push({
                     userId: '',
                     roleIds: []
@@ -258,13 +257,27 @@ export default {
                 if (!valid) {
                     return;
                 }
-                // API call
-                console.log('Calling API with');
-                console.log('form.name', this.form.name);
-                console.log('form.deadline', this.form.deadline);
-                console.log('form.responsibleUserId', this.form.responsibleUserId);
-                console.log('form.members', this.form.members);
-                alert('Project created');
+                this.$axios.$post('/projects', {
+                    name: this.form.name,
+                    deadline: this.form.deadline,
+                    responsibleUserId: this.form.responsibleUserId,
+                    members: this.form.members
+                }).then(response => {
+                    this.$router.push('/admin/projects');
+                    this.$notify({
+                        type: 'success',
+                        title: 'Success',
+                        message: response.message,
+                        position: 'bottom-right'
+                    });
+                }).catch(error => {
+                    this.$notify({
+                        type: 'error',
+                        title: 'Error',
+                        message: error.response.data.message,
+                        position: 'bottom-right'
+                    });
+                });
             });
         }
     }
