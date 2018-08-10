@@ -96,7 +96,7 @@
                             message: 'Role updated',
                             position: 'bottom-right'
                         });
-                    }).catch(error => {
+                    }).catch((error) => {
                         this.$notify({
                             type: 'error',
                             title: 'Error',

@@ -86,7 +86,7 @@ export default {
                 confirmButtonClass: 'el-button--danger'
             }).then(() => {
                 this.$axios.$delete(`/roles/${id}`)
-                    .then(response => {
+                    .then((response) => {
                         this.$notify({
                             type: 'success',
                             title: 'Success',
@@ -94,7 +94,7 @@ export default {
                             position: 'bottom-right'
                         });
                         this.roles = this.roles.filter(role => role.id !== id);
-                    }).catch(error => {
+                    }).catch((error) => {
                         this.$notify({
                             type: 'error',
                             title: 'Error',

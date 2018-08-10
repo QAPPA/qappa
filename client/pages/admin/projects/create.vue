@@ -175,7 +175,7 @@ export default {
                     {
                         validator: (rule, value, callback) => {
                             // if at least one user is valid, return ok
-                            value.forEach(member => {
+                            value.forEach((member) => {
                                 if (member.userId !== '' && member.roleIds.length > 0) {
                                     return callback();
                                 }
@@ -188,7 +188,7 @@ export default {
                     },
                     {
                         validator: (rule, value, callback) => {
-                            value.forEach(member => {
+                            value.forEach((member) => {
                                 if (member.userId === '' || member.roleIds.length === 0) {
                                     return callback(new Error(rule.message));
                                 }
@@ -218,7 +218,7 @@ export default {
     computed: {
         userSelectOptions() {
             // returns all users, but those that are used have disabled flag set to true
-            return this.users.map(user => {
+            return this.users.map((user) => {
                 const isUsed = this.form.members.some(member => member.userId === user.id);
                 return {
                     id: user.id,
@@ -266,7 +266,7 @@ export default {
                     deadline: this.form.deadline,
                     responsibleUserId: this.form.responsibleUserId,
                     members: this.form.members
-                }).then(response => {
+                }).then((response) => {
                     this.$router.push('/admin/projects');
                     this.$notify({
                         type: 'success',
@@ -274,7 +274,7 @@ export default {
                         message: response.message,
                         position: 'bottom-right'
                     });
-                }).catch(error => {
+                }).catch((error) => {
                     this.$notify({
                         type: 'error',
                         title: 'Error',

@@ -107,9 +107,9 @@
         },
         async asyncData({ app }) {
             const response = await app.$axios.$get('/projects');
-            const projects = response.map(project => {
+            const projects = response.map((project) => {
                 const responsible = `${project.responsibleUser.name} ${project.responsibleUser.surname}`;
-                const team = project.members.map(member => {
+                const team = project.members.map((member) => {
                    const name = `${member.user.name} ${member.user.surname}`;
                    const roles = member.roles.map(role => role.name).join(',');
                    return `${name} (${roles})`;
@@ -149,7 +149,7 @@
                     confirmButtonClass: 'el-button--danger'
                 }).then(() => {
                     this.$axios.$put(`/projects/${id}/toggle`)
-                        .then(response => {
+                        .then((response) => {
                             project.open = !project.open;
                             this.$notify({
                                 type: 'success',
@@ -157,7 +157,7 @@
                                 message: response.message,
                                 position: 'bottom-right'
                             });
-                        }).catch(error => {
+                        }).catch((error) => {
                             this.$notify({
                                 type: 'error',
                                 title: 'Error',
@@ -174,7 +174,7 @@
                     confirmButtonClass: 'el-button--danger'
                 }).then(() => {
                     this.$axios.$delete(`/projects/${id}`)
-                        .then(response => {
+                        .then((response) => {
                             this.projects = this.projects.filter(project => project.id !== id);
                             this.$notify({
                                 type: 'success',
@@ -182,7 +182,7 @@
                                 message: response.message,
                                 position: 'bottom-right'
                             });
-                        }).catch(error => {
+                        }).catch((error) => {
                             this.$notify({
                                 type: 'error',
                                 title: 'Error',
