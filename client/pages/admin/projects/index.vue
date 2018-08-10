@@ -13,23 +13,19 @@
                     empty-text="No projects found">
                     <el-table-column
                         prop="id"
-                        label="ID"
-                        width="50">
+                        label="ID">
                     </el-table-column>
                     <el-table-column
                         prop="name"
-                        label="Name"
-                        width="400">
+                        label="Name">
                     </el-table-column>
                     <el-table-column
                         prop="deadline"
-                        label="Deadline"
-                        width="120">
+                        label="Deadline">
                     </el-table-column>
                     <el-table-column
                         prop="responsible"
-                        label="Responsible person"
-                        width="250">
+                        label="Responsible person">
                     </el-table-column>
                     <el-table-column
                         prop="team"
@@ -217,4 +213,6 @@
         color: green
     .closedProject
         color: red
+    .el-table
+        margin-top: 20px
 </style>

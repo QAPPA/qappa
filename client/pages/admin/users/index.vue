@@ -28,8 +28,19 @@
                         label="Email">
                     </el-table-column>
                     <el-table-column
-                        prop="admin"
                         label="Admin">
+                        <template slot-scope="scope">
+                            <span
+                                v-if="scope.row.admin"
+                                class="admin">
+                                <span class="el-icon-success"></span> True
+                            </span>
+                            <span
+                                v-else
+                                class="notAdmin">
+                                <span class="el-icon-error"></span> False
+                            </span>
+                        </template>
                     </el-table-column>
                 </el-table>
             </b-col>
@@ -61,16 +72,18 @@ export default {
     },
     async asyncData({ app }) {
         const { users } = await app.$axios.$get('/users');
-        const mappedUsers = users.map(user => ({
-            id: user.id,
-            name: user.name,
-            surname: user.surname,
-            email: user.email,
-            admin: user.admin.toString()
-        }));
         return {
-            users: mappedUsers
+            users
         };
     }
 };
 </script>
+
+<style lang="sass" scoped>
+    .admin
+        color: green
+    .notAdmin
+        color: red
+    .el-table
+        margin-top: 20px
+</style>

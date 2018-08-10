@@ -4,6 +4,10 @@
         <b-row>
             <b-col>
                 <h1>Edit team role</h1>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col cols="6">
                 <el-form
                     ref="form"
                     :model="form"
@@ -105,3 +109,8 @@
         }
     };
 </script>
+
+<style lang="sass" scoped>
+    .el-form
+        margin-top: 20px
+</style>

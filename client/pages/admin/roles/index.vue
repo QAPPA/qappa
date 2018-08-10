@@ -22,12 +22,15 @@
                     <el-table-column
                         label="Operations">
                         <template slot-scope="scope">
-                            <nuxt-link :to="`/admin/roles/edit/${scope.row.id}`">
+                            <nuxt-link
+                                :to="`/admin/roles/edit/${scope.row.id}`"
+                                title="Edit team role">
                                 <span class="el-icon-edit"></span>
                             </nuxt-link>
                             <el-button
                                 class="deleteButton"
                                 type="text"
+                                title="Delete team role"
                                 @click="handleRoleDelete(scope.row.id)">
                                 <span class="el-icon-delete"></span>
                             </el-button>
@@ -115,4 +118,6 @@ export default {
     .deleteButton
         margin-left: 10px
         padding: 0
+    .el-table
+        margin-top: 20px
 </style>

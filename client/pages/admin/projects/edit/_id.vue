@@ -4,6 +4,10 @@
         <b-row>
             <b-col>
                 <h1>Edit project</h1>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col cols="6">
                 <el-form
                     ref="form"
                     :model="form"
@@ -55,7 +59,7 @@
                             v-for="(member, index) in form.members"
                             :key="index"
                             class="mb-2">
-                            <b-col cols="2">
+                            <b-col cols="4">
                                 <el-select
                                     v-model="member.userId"
                                     clearable
@@ -322,5 +326,7 @@
 
 <style lang="sass" scoped>
     .roleSelect
-        width: 50%
+        width: 100%
+    .el-form
+        margin-top: 20px
 </style>
