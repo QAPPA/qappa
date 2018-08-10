@@ -60,7 +60,6 @@
                                     v-model="member.userId"
                                     clearable
                                     placeholder="Select a person"
-                                    @change="handlePersonChange"
                                     @clear="handlePersonClear(index)">
                                     <el-option
                                         v-for="user in userSelectOptions"
@@ -77,8 +76,7 @@
                                     v-model="member.roleIds"
                                     class="roleSelect"
                                     multiple
-                                    placeholder="Select roles"
-                                    @change="handlePersonChange">
+                                    placeholder="Select roles">
                                     <el-option
                                         v-for="role in roles"
                                         :key="role.id"
@@ -90,6 +88,13 @@
                         </b-row>
                     </el-form-item>
                     <el-form-item>
+                        <el-button
+                            v-if="form.members.length < users.length"
+                            type="primary"
+                            plain
+                            @click="addNewRow">
+                            Add member
+                        </el-button>
                         <el-button
                             type="primary"
                             @click="handleSubmit">Submit</el-button>
@@ -197,15 +202,11 @@
                         },
                         {
                             validator: (rule, value, callback) => {
-                                // if we have another user available, there's an empty row, that's why we need to limit the loop
-                                // validates all selected users so they have at least one role
-                                const limit = (this.availableUsers.length === 0) ? value.length : value.length - 1;
-                                for (let i = 0; i < limit; i++) {
-                                    const member = value[i];
+                                value.forEach(member => {
                                     if (member.userId === '' || member.roleIds.length === 0) {
                                         return callback(new Error(rule.message));
                                     }
-                                }
+                                });
                                 callback();
                             },
                             required: true,
@@ -233,99 +234,43 @@
                 return this.users.filter(user => this.form.members.every(member => member.userId !== user.id));
             }
         },
-        async asyncData({ params }) {
-            // TODO: API call using params.id
-            // TODO: error handling https://nuxtjs.org/guide/async-data#handling-errors
+        async asyncData({ app, params, redirect }) {
+            let projectResponse;
+            try {
+                projectResponse = await app.$axios.$get(`/projects/${params.id}`);
+            } catch (error) {
+                return redirect('/admin/projects', {
+                    error: error.response.data.message
+                });
+            }
+
             const data = {
                 form: {}
             };
-            const response = {
-                id: 0,
-                name: 'Project 1',
-                deadline: '2018-08-27',
-                open: true,
-                responsibleUserId: 0,
-                members: [
-                    {
-                        userId: 0,
-                        roleIds: [0, 1]
-                    },
-                    {
-                        userId: 1,
-                        roleIds: [1]
-                    },
-                    {
-                        userId: 2,
-                        roleIds: [2]
-                    },
-                ]
-            };
-            data.form.id = response.id;
-            data.form.name = response.name;
-            data.form.deadline = response.deadline;
-
-            // construct available users
-            // API calls
-            const userResponse = {
-                users: [
-                    {
-                        id: 0,
-                        name: 'Carl',
-                        surname: 'Johnson',
-                        email: 'carl@qappa.net',
-                        admin: false,
-                    },
-                    {
-                        id: 1,
-                        name: 'Jessica',
-                        surname: 'Mellow',
-                        email: 'jessica@qappa.net',
-                        admin: false,
-                    },
-                    {
-                        id: 2,
-                        name: 'John',
-                        surname: 'Duke',
-                        email: 'john@qappa.net',
-                        admin: false,
-                    },
-                    {
-                        id: 3,
-                        name: 'Lucas',
-                        surname: 'Frowning',
-                        email: 'lucas@qappa.net',
-                        admin: false,
-                    }
-                ]
-            };
+            // fill users and roles
+            const userResponse = await app.$axios.$get('/users');
             data.users = userResponse.users.map(user => ({
                 id: user.id,
                 name: `${user.name} ${user.surname}`
             }));
-            // direct API call, returns exactly this format
-            data.roles = [
-                { id: 0, name: 'Tester' },
-                { id: 1, name: 'Developer' },
-                { id: 2, name: 'Analyst' }
-            ];
-            data.form.open = response.open;
-            data.form.responsibleUserId = response.responsibleUserId;
-            data.form.members = response.members;
-
-            const availableUsers = data.users.filter(user => data.form.members.every(member => member.userId !== user.id));
-            if (availableUsers.length > 0) {
-                data.form.members.push({
-                    userId: '',
-                    roleIds: []
-                });
-            }
+            data.roles = await app.$axios.$get('/roles');
+            // populate project details
+            data.form.id = projectResponse.id;
+            data.form.name = projectResponse.name;
+            data.form.deadline = projectResponse.deadline;
+            data.form.open = projectResponse.open;
+            data.form.responsibleUserId = projectResponse.responsibleUserId;
+            data.form.members = projectResponse.members;
             return data;
         },
         methods: {
-            handlePersonChange() {
+            addNewRow() {
                 const lastMember = this.form.members[this.form.members.length - 1];
-                // if last user in array is picked and there are more available users, add another row
-                if (lastMember.userId !== '' && this.availableUsers.length > 0) {
+                if (lastMember.userId === '' || lastMember.roleIds.length === 0) {
+                    this.$message.error('Please first select last person and his roles before adding a new person');
+                    return;
+                }
+                if (this.availableUsers.length > 0) {
                     this.form.members.push({
                         userId: '',
                         roleIds: []
@@ -347,15 +292,28 @@
                     if (!valid) {
                         return;
                     }
-                    // API call
-                    console.log('Calling API with');
-                    console.log('form.id', this.form.id);
-                    console.log('form.name', this.form.name);
-                    console.log('form.deadline', this.form.deadline);
-                    console.log('form.open', this.form.open);
-                    console.log('form.responsibleUserId', this.form.responsibleUserId);
-                    console.log('form.members', JSON.stringify(this.form.members, null, 4));
-                    alert('Project edited');
+                    this.$axios.$put(`/projects/${this.form.id}`, {
+                        name: this.form.name,
+                        deadline: this.form.deadline,
+                        open: this.form.open,
+                        responsibleUserId: this.form.responsibleUserId,
+                        members: this.form.members
+                    }).then(response => {
+                        this.$router.push('/admin/projects');
+                        this.$notify({
+                            type: 'success',
+                            title: 'Success',
+                            message: response.message,
+                            position: 'bottom-right'
+                        });
+                    }).catch(error => {
+                        this.$notify({
+                            type: 'error',
+                            title: 'Error',
+                            message: error.response.data.message,
+                            position: 'bottom-right'
+                        });
+                    });
                 });
             }
         }

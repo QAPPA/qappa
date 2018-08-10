@@ -131,6 +131,17 @@
                 projects
             };
         },
+        mounted() {
+            const { error } = this.$route.query;
+            if (error) {
+                this.$notify({
+                    type: 'error',
+                    title: 'Error',
+                    message: error,
+                    position: 'bottom-right'
+                });
+            }
+        },
         methods: {
             handleProjectToggle(id) {
                 const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
