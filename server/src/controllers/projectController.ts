@@ -2,7 +2,8 @@ import { Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import { getRepository } from 'typeorm';
 import { admin } from '../middleware/auth';
-import { ProjectCreateUser, validateCreate, validateEdit } from '../utils/validations/project';
+import { validateCreate, validateEdit } from '../utils/validations/project';
+import { IProjectMember } from '../utils/types/project';
 import { User } from '../entities/User';
 import { Project } from '../entities/Project';
 import { TeamRole } from '../entities/TeamRole';
@@ -10,23 +11,23 @@ import { ProjectUser } from '../entities/ProjectUser';
 
 const router = Router();
 
-function findUsersOrFail(users: ProjectCreateUser[]): Promise<User[]> {
+function findUsersOrFail(members: IProjectMember[]): Promise<User[]> {
     const userRepository = getRepository(User);
-    const userPromises = users.map(user => userRepository.findOne(user.userId));
+    const userPromises = members.map(user => userRepository.findOne(user.userId));
     return Promise.all(userPromises);
 }
 
-function findRolesOrFail(users: ProjectCreateUser[]): Promise<TeamRole[]> {
+function findRolesOrFail(members: IProjectMember[]): Promise<TeamRole[]> {
     const roleRepository = getRepository(TeamRole);
     // roleIds are unique on their own but not all together
-    // first, map users[] to their roleIds[], resulting in type number[][] like [[1, 2], [2], [3]]
+    // first, map members[] to their roleIds[], resulting in type number[][] like [[1, 2], [2], [3]]
     // lodash flattens it to [1, 2, 2, 3] and picks only unique values (no need for comparator since it's plain numbers)
-    const uniqueRoleIds = _.uniq(_.flatten(users.map(user => user.roleIds)));
+    const uniqueRoleIds = _.uniq(_.flatten(members.map(user => user.roleIds)));
     const rolePromises = uniqueRoleIds.map(id => roleRepository.findOne(id));
     return Promise.all(rolePromises);
 }
 
-function addProjectUsers(members: ProjectCreateUser[], users: User[], roles: TeamRole[], project: Project): Promise<ProjectUser[]> {
+function addProjectUsers(members: IProjectMember[], users: User[], roles: TeamRole[], project: Project): Promise<ProjectUser[]> {
     const projectUserRepository = getRepository(ProjectUser);
     const projectUserPromises = members.map(async (validatedUser) => {
         const user = users.find(u => u.id === validatedUser.userId);

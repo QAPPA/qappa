@@ -1,20 +1,5 @@
 import * as Joi from 'joi';
-
-export interface ProjectCreateUser {
-    userId: number;
-    roleIds: number[];
-}
-
-interface ProjectCreate {
-    name: string;
-    deadline: string;
-    responsibleUserId: number;
-    users: ProjectCreateUser[];
-}
-
-interface ProjectEdit extends ProjectCreate {
-    open: boolean;
-}
+import { IProjectCreate, IProjectEdit } from '../types/project';
 
 const projectCreateSchema = {
     name: Joi.string().max(100).required(),
@@ -33,10 +18,10 @@ const projectEditSchema = {
     open: Joi.boolean().required()
 };
 
-export const validateCreate = (project: any): Joi.ValidationResult<ProjectCreate> => {
+export const validateCreate = (project: any): Joi.ValidationResult<IProjectCreate> => {
     return Joi.validate(project, projectCreateSchema);
 };
 
-export const validateEdit = (project: any): Joi.ValidationResult<ProjectEdit> => {
+export const validateEdit = (project: any): Joi.ValidationResult<IProjectEdit> => {
     return Joi.validate(project, projectEditSchema);
 };

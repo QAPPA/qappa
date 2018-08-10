@@ -1,15 +1,5 @@
 import * as Joi from 'joi';
-
-interface User {
-    email: string;
-    password: string;
-}
-
-interface UserRegister extends User {
-    name: string;
-    surname: string;
-    admin?: boolean;
-}
+import { IUser, IUserRegister } from '../types/user';
 
 const userSchema = {
     email: Joi.string().min(5).max(100).required().email(),
@@ -23,10 +13,10 @@ const userRegisterSchema = {
     admin: Joi.boolean()
 };
 
-export const validateLogin = (user: any): Joi.ValidationResult<User> => {
+export const validateLogin = (user: any): Joi.ValidationResult<IUser> => {
     return Joi.validate(user, userSchema);
 };
 
-export const validateRegister = (user: any): Joi.ValidationResult<UserRegister> => {
+export const validateRegister = (user: any): Joi.ValidationResult<IUserRegister> => {
     return Joi.validate(user, userRegisterSchema);
 };
