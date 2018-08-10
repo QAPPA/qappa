@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
     head() {
         return {
@@ -61,6 +63,11 @@ export default {
             ]
         };
     },
+    computed: {
+        ...mapGetters({
+          error: 'errors/rolesError'
+        })
+    },
     async asyncData({ app }) {
         const roles = await app.$axios.$get('/roles');
         return {
@@ -68,17 +75,20 @@ export default {
         };
     },
     mounted() {
-        const { error } = this.$route.query;
-        if (error) {
+        if (this.error) {
             this.$notify({
                 type: 'error',
                 title: 'Error',
-                message: error,
+                message: this.error,
                 position: 'bottom-right'
             });
+            this.removeRolesError();
         }
     },
     methods: {
+        ...mapActions({
+           removeRolesError: 'errors/removeRolesError'
+        }),
         handleRoleDelete(id) {
             this.$confirm('Are you sure you want to delete this role?', {
                 type: 'warning',

@@ -32,6 +32,8 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex';
+
     export default {
         head() {
             return {
@@ -66,7 +68,17 @@
                 }
             };
         },
-        async asyncData({ app, params, redirect }) {
+        computed: {
+            ...mapGetters({
+                error: 'errors/rolesError'
+            })
+        },
+        mounted() {
+            if (this.error) {
+                this.$router.replace({ path: '/admin/roles' });
+            }
+        },
+        async asyncData({ app, params, store }) {
             try {
                 const response = await app.$axios.$get(`/roles/${params.id}`);
                 return {
@@ -75,9 +87,7 @@
                     }
                 };
             } catch (error) {
-                return redirect('/admin/roles', {
-                    error: error.response.data.message
-                });
+                store.dispatch('errors/setRolesError', error.response.data.message);
             }
         },
         methods: {
