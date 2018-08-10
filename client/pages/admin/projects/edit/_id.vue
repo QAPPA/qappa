@@ -50,14 +50,14 @@
                     </el-form-item>
                     <el-form-item
                         label="Team members"
-                        prop="users">
+                        prop="members">
                         <b-row
-                            v-for="(user, index) in form.users"
+                            v-for="(member, index) in form.members"
                             :key="index"
                             class="mb-2">
                             <b-col cols="2">
                                 <el-select
-                                    v-model="user.userId"
+                                    v-model="member.userId"
                                     clearable
                                     placeholder="Select a person"
                                     @change="handlePersonChange"
@@ -73,8 +73,8 @@
                             </b-col>
                             <b-col cols="8">
                                 <el-select
-                                    v-if="user.userId !== undefined && user.userId !== ''"
-                                    v-model="user.roleIds"
+                                    v-if="member.userId !== undefined && member.userId !== ''"
+                                    v-model="member.roleIds"
                                     class="roleSelect"
                                     multiple
                                     placeholder="Select roles"
@@ -133,7 +133,7 @@
                     deadline: '',
                     open: false,
                     responsibleUserId: '',
-                    users: [
+                    members: [
                         {
                             userId: '',
                             roleIds: []
@@ -180,12 +180,12 @@
                             trigger: 'change'
                         }
                     ],
-                    users: [
+                    members: [
                         {
                             validator: (rule, value, callback) => {
                                 // if at least one user is valid, return ok
-                                value.forEach(user => {
-                                    if (user.userId !== '' && user.roleIds.length > 0) {
+                                value.forEach(member => {
+                                    if (member.userId !== '' && member.roleIds.length > 0) {
                                         return callback();
                                     }
                                 });
@@ -201,8 +201,8 @@
                                 // validates all selected users so they have at least one role
                                 const limit = (this.availableUsers.length === 0) ? value.length : value.length - 1;
                                 for (let i = 0; i < limit; i++) {
-                                    const user = value[i];
-                                    if (user.userId === '' || user.roleIds.length === 0) {
+                                    const member = value[i];
+                                    if (member.userId === '' || member.roleIds.length === 0) {
                                         return callback(new Error(rule.message));
                                     }
                                 }
@@ -220,7 +220,7 @@
             userSelectOptions() {
                 // returns all users, but those that are used have disabled flag set to true
                 return this.users.map(user => {
-                    const isUsed = this.form.users.some(formUser => formUser.userId === user.id);
+                    const isUsed = this.form.members.some(member => member.userId === user.id);
                     return {
                         id: user.id,
                         name: user.name,
@@ -230,7 +230,7 @@
             },
             availableUsers() {
                 // returns only those users that have not been used
-                return this.users.filter(user => this.form.users.every(formUser => formUser.userId !== user.id));
+                return this.users.filter(user => this.form.members.every(member => member.userId !== user.id));
             }
         },
         async asyncData({ params }) {
@@ -245,7 +245,7 @@
                 deadline: '2018-08-27',
                 open: true,
                 responsibleUserId: 0,
-                users: [
+                members: [
                     {
                         userId: 0,
                         roleIds: [0, 1]
@@ -310,11 +310,11 @@
             ];
             data.form.open = response.open;
             data.form.responsibleUserId = response.responsibleUserId;
-            data.form.users = response.users;
+            data.form.members = response.members;
 
-            const availableUsers = data.users.filter(user => data.form.users.every(formUser => formUser.userId !== user.id));
+            const availableUsers = data.users.filter(user => data.form.members.every(member => member.userId !== user.id));
             if (availableUsers.length > 0) {
-                data.form.users.push({
+                data.form.members.push({
                     userId: '',
                     roleIds: []
                 });
@@ -323,10 +323,10 @@
         },
         methods: {
             handlePersonChange() {
-                const lastUser = this.form.users[this.form.users.length - 1];
+                const lastMember = this.form.members[this.form.members.length - 1];
                 // if last user in array is picked and there are more available users, add another row
-                if (lastUser.userId !== '' && this.availableUsers.length > 0) {
-                    this.form.users.push({
+                if (lastMember.userId !== '' && this.availableUsers.length > 0) {
+                    this.form.members.push({
                         userId: '',
                         roleIds: []
                     });
@@ -334,12 +334,12 @@
             },
             handlePersonClear(index) {
                 // if there's more than 1 row, remove the whole row, otherwise just reset data
-                if (this.form.users.length > 1) {
-                    this.form.users.splice(index, 1);
+                if (this.form.members.length > 1) {
+                    this.form.members.splice(index, 1);
                 }
                 else {
-                    this.form.users[index].userId = '';
-                    this.form.users[index].roleIds = [];
+                    this.form.members[index].userId = '';
+                    this.form.members[index].roleIds = [];
                 }
             },
             handleSubmit() {
@@ -354,7 +354,7 @@
                     console.log('form.deadline', this.form.deadline);
                     console.log('form.open', this.form.open);
                     console.log('form.responsibleUserId', this.form.responsibleUserId);
-                    console.log('form.users', JSON.stringify(this.form.users, null, 4));
+                    console.log('form.members', JSON.stringify(this.form.members, null, 4));
                     alert('Project edited');
                 });
             }

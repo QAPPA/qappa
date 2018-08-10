@@ -53,7 +53,7 @@ router.get('/', admin, async (req: Request, res: Response) => {
         const deadline = project.deadline;
         const open = project.open;
         const responsibleUser = _.pick(project.responsibleUser, ['id', 'name', 'surname']);
-        const users = project.users.map((projectUser) => {
+        const members = project.users.map((projectUser) => {
             const user = _.pick(projectUser.user, ['id', 'name', 'surname']);
             const roles = projectUser.roles.map(role => _.pick(role, ['id', 'name']));
             return {
@@ -67,7 +67,7 @@ router.get('/', admin, async (req: Request, res: Response) => {
             deadline,
             open,
             responsibleUser,
-            users
+            members
         };
     });
     return res.status(200).send(projects);
@@ -90,14 +90,14 @@ router.post('/', admin, async (req: Request, res: Response) => {
     }
     let users;
     try {
-        users = await findUsersOrFail(validated.users);
+        users = await findUsersOrFail(validated.members);
     } catch {
         return res.status(400).send({ message: 'One or more people participating in the project don\'t exist' });
     }
 
     let roles;
     try {
-        roles = await findRolesOrFail(validated.users);
+        roles = await findRolesOrFail(validated.members);
     } catch {
         return res.status(400).send({ message: 'One or more used team roles don\'t exist' });
     }
@@ -110,7 +110,7 @@ router.post('/', admin, async (req: Request, res: Response) => {
     const savedProject = await projectRepository.save(project);
     // typeorm doesn't seem to handle creating nested objects (creating whole project.users[]) and saving all at once
     // so additionally add users to the project with their roles
-    await addProjectUsers(validated.users, users, roles, savedProject);
+    await addProjectUsers(validated.members, users, roles, savedProject);
     // TODO: figure out what to send in response to avoid circular references in JSON
     return res.sendStatus(200);
 });
@@ -130,7 +130,7 @@ router.get('/:id(\\d+)', admin, async (req: Request, res: Response) => {
         deadline: found.deadline,
         open: found.open,
         responsibleUserId: found.responsibleUser.id,
-        users: found.users.map(projectUser => ({
+        members: found.users.map(projectUser => ({
             userId: projectUser.user.id,
             roleIds: projectUser.roles.map(role => role.id)
         }))
@@ -162,14 +162,14 @@ router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
     }
     let users;
     try {
-        users = await findUsersOrFail(validated.users);
+        users = await findUsersOrFail(validated.members);
     } catch {
         return res.status(400).send({ message: 'One or more people participating in the project don\'t exist' });
     }
 
     let roles;
     try {
-        roles = await findRolesOrFail(validated.users);
+        roles = await findRolesOrFail(validated.members);
     } catch {
         return res.status(400).send({ message: 'One or more used team roles don\'t exist' });
     }
@@ -183,7 +183,7 @@ router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
 
     await projectUserRepository.delete({ project });
 
-    await addProjectUsers(validated.users, users, roles, savedProject);
+    await addProjectUsers(validated.members, users, roles, savedProject);
     // TODO: figure out what to send in response to avoid circular references in JSON
     return res.status(200).send({ message: 'Project successfully updated' });
 });

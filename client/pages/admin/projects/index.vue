@@ -122,7 +122,7 @@
                         name: 'Carl',
                         surname: 'Johnson'
                     },
-                    users: [
+                    members: [
                         {
                             user: {
                                 id: 0,
@@ -165,7 +165,7 @@
                         name: 'Jessica',
                         surname: 'Mellow'
                     },
-                    users: [
+                    members: [
                         {
                             user: {
                                 id: 1,
@@ -184,7 +184,7 @@
             ];
             const projects = response.map(project => {
                 const responsible = `${project.responsibleUser.name} ${project.responsibleUser.surname}`;
-                const team = project.users.map(member => {
+                const team = project.members.map(member => {
                    const name = `${member.user.name} ${member.user.surname}`;
                    const roles = member.roles.map(role => role.name).join(',');
                    return `${name} (${roles})`;

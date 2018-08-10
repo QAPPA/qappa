@@ -5,7 +5,7 @@ const projectCreateSchema = {
     name: Joi.string().max(100).required(),
     deadline: Joi.date().min('now').required(),
     responsibleUserId: Joi.number().min(0).required(),
-    users: Joi.array().items({
+    members: Joi.array().items({
         userId: Joi.number().min(0).required(),
         roleIds: Joi.array().items(
             Joi.number().min(0)

@@ -7,7 +7,7 @@ export interface IProjectCreate {
     name: string;
     deadline: string;
     responsibleUserId: number;
-    users: IProjectMember[];
+    members: IProjectMember[];
 }
 
 export interface IProjectEdit extends IProjectCreate {
