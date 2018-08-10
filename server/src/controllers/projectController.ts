@@ -208,7 +208,7 @@ router.put('/:id(\\d+)/toggle', admin, async (req: Request, res: Response) => {
     }
     project.open = !project.open;
     await repository.save(project);
-    return res.status(200).send({ message: 'Project successfully toggled' });
+    return res.status(200).send({ message: `Project successfully ${project.open ? 'opened' : 'closed'}` });
 });
 
 export default router;

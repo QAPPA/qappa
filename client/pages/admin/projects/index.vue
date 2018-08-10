@@ -109,79 +109,8 @@
                 ]
             };
         },
-        async asyncData() {
-            // TODO: simulated API call, probably not accurate, depicting mostly the data transformation
-            const response = [
-                {
-                    id: 0,
-                    name: 'Project 1',
-                    deadline: '27/08/2018',
-                    open: true,
-                    responsibleUser: {
-                        id: 0,
-                        name: 'Carl',
-                        surname: 'Johnson'
-                    },
-                    members: [
-                        {
-                            user: {
-                                id: 0,
-                                name: 'Carl',
-                                surname: 'Johnson'
-                            },
-                            roles: [
-                                {
-                                    id: 0,
-                                    name: 'Tester'
-                                },
-                                {
-                                    id: 1,
-                                    name: 'Developer'
-                                }
-                            ]
-                        },
-                        {
-                            user: {
-                                id: 1,
-                                name: 'Jessica',
-                                surname: 'Mellow'
-                            },
-                            roles: [
-                                {
-                                    id: 1,
-                                    name: 'Developer'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    id: 1,
-                    name: 'Project 2',
-                    deadline: '30/04/2019',
-                    open: false,
-                    responsibleUser: {
-                        id: 1,
-                        name: 'Jessica',
-                        surname: 'Mellow'
-                    },
-                    members: [
-                        {
-                            user: {
-                                id: 1,
-                                name: 'Jessica',
-                                surname: 'Mellow'
-                            },
-                            roles: [
-                                {
-                                    id: 1,
-                                    name: 'Developer'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ];
+        async asyncData({ app }) {
+            const response = await app.$axios.$get('/projects');
             const projects = response.map(project => {
                 const responsible = `${project.responsibleUser.name} ${project.responsibleUser.surname}`;
                 const team = project.members.map(member => {
@@ -212,8 +141,23 @@
                     confirmButtonText: capitalize(operation),
                     confirmButtonClass: 'el-button--danger'
                 }).then(() => {
-                    console.log(`${capitalize(operation)} project id`, id);
-                    project.open = !project.open;
+                    this.$axios.$put(`/projects/${id}/toggle`)
+                        .then(response => {
+                            project.open = !project.open;
+                            this.$notify({
+                                type: 'success',
+                                title: 'Success',
+                                message: response.message,
+                                position: 'bottom-right'
+                            });
+                        }).catch(error => {
+                            this.$notify({
+                                type: 'error',
+                                title: 'Error',
+                                message: error.response.data.message,
+                                position: 'bottom-right'
+                            });
+                        });
                 });
             },
             handleProjectDelete(id) {
@@ -222,8 +166,23 @@
                     confirmButtonText: 'Delete',
                     confirmButtonClass: 'el-button--danger'
                 }).then(() => {
-                    console.log('Delete project id', id);
-                    this.projects = this.projects.filter(project => project.id !== id);
+                    this.$axios.$delete(`/projects/${id}`)
+                        .then(response => {
+                            this.projects = this.projects.filter(project => project.id !== id);
+                            this.$notify({
+                                type: 'success',
+                                title: 'Success',
+                                message: response.message,
+                                position: 'bottom-right'
+                            });
+                        }).catch(error => {
+                            this.$notify({
+                                type: 'error',
+                                title: 'Error',
+                                message: error.response.data.message,
+                                position: 'bottom-right'
+                            });
+                        });
                 });
             }
         }
