@@ -75,7 +75,7 @@
         },
         mounted() {
             if (this.error) {
-                this.$router.replace({ path: '/admin/roles' });
+                this.$router.push({ path: '/admin/roles' });
             }
         },
         async asyncData({ app, params, store }) {

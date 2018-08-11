@@ -110,6 +110,8 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex';
+
     export default {
         head() {
             return {
@@ -222,6 +224,9 @@
             };
         },
         computed: {
+            ...mapGetters({
+                error: 'errors/projectError'
+            }),
             userSelectOptions() {
                 // returns all users, but those that are used have disabled flag set to true
                 return this.users.map((user) => {
@@ -238,14 +243,17 @@
                 return this.users.filter(user => this.form.members.every(member => member.userId !== user.id));
             }
         },
-        async asyncData({ app, params, redirect }) {
+        mounted() {
+            if (this.error) {
+                this.$router.push({ path: '/admin/projects' });
+            }
+        },
+        async asyncData({ app, params, store }) {
             let projectResponse;
             try {
                 projectResponse = await app.$axios.$get(`/projects/${params.id}`);
             } catch (error) {
-                return redirect('/admin/projects', {
-                    error: error.response.data.message
-                });
+                return store.dispatch('errors/setProjectError', error.response.data.message);
             }
 
             const data = {

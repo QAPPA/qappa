@@ -1,8 +1,8 @@
 import { Application, Request, Response } from 'express';
 import usersController from './usersController';
 import authenticationController from './authenticationController';
-import projectController from './projectController';
-import roleController from './roleController';
+import projectsController from './projectsController';
+import rolesController from './rolesController';
 import { authenticate, admin } from '../middleware/auth';
 
 export default (app: Application) => {
@@ -11,8 +11,8 @@ export default (app: Application) => {
     // POST /users
     app.use('/auth', authenticationController);
     app.use('/users', usersController);
-    app.use('/projects', projectController);
-    app.use('/roles', roleController);
+    app.use('/projects', projectsController);
+    app.use('/roles', rolesController);
     app.get('/protected', authenticate, (req: Request, res: Response) => {
         console.log('Inside protected');
         return res.sendStatus(200);

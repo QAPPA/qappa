@@ -11,7 +11,7 @@
             is-nav>
             <b-navbar-nav>
                 <b-nav-item to="/">Home</b-nav-item>
-                <template v-if="admin">
+                <template v-if="isAdmin">
                     <b-nav-item-dropdown
                         text="Projects"
                         right>
@@ -49,7 +49,7 @@
 <script>
     export default {
         computed: {
-            admin() {
+            isAdmin() {
                 return this.$auth.user.admin;
             },
             userFullName() {
@@ -60,7 +60,6 @@
         methods: {
             async handleLogout() {
                 await this.$auth.logout();
-                this.$router.push('/login');
                 this.$notify({
                     title: 'Success',
                     message: 'You have been successfully logged off from system.',

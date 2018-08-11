@@ -84,6 +84,8 @@
 </template>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex';
+
     export default {
         head() {
             return {
@@ -104,6 +106,11 @@
                     }
                 ]
             };
+        },
+        computed: {
+            ...mapGetters({
+                error: 'errors/projectError'
+            })
         },
         async asyncData({ app }) {
             const response = await app.$axios.$get('/projects');
@@ -128,17 +135,20 @@
             };
         },
         mounted() {
-            const { error } = this.$route.query;
-            if (error) {
+            if (this.error) {
                 this.$notify({
                     type: 'error',
                     title: 'Error',
-                    message: error,
+                    message: this.error,
                     position: 'bottom-right'
                 });
+                this.removeProjectError();
             }
         },
         methods: {
+            ...mapActions({
+                removeProjectError: 'errors/removeProjectError'
+            }),
             handleProjectToggle(id) {
                 const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
                 const project = this.projects.find(p => p.id === id);
