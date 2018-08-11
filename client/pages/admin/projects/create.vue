@@ -105,6 +105,8 @@
 </template>
 
 <script>
+import * as moment from 'moment';
+
 export default {
     head() {
         return {
@@ -140,7 +142,7 @@ export default {
             },
             deadlineOptions: {
                 disabledDate(time) {
-                    const yesterday = Date.now() - (24 * 60 * 60 * 1000);
+                    const yesterday = moment().subtract(1, 'days').valueOf();
                     return time.getTime() <= yesterday;
                 }
             },

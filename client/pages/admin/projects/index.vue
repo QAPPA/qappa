@@ -85,6 +85,7 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
+    import * as moment from 'moment';
 
     export default {
         head() {
@@ -115,6 +116,7 @@
         async asyncData({ app }) {
             const response = await app.$axios.$get('/projects');
             const projects = response.map((project) => {
+                const deadline = moment(project.deadline, 'YYYY-MM-DD').format('DD.MM.YYYY');
                 const responsible = `${project.responsibleUser.name} ${project.responsibleUser.surname}`;
                 const team = project.members.map((member) => {
                    const name = `${member.user.name} ${member.user.surname}`;
@@ -124,7 +126,7 @@
                 return {
                     id: project.id,
                     name: project.name,
-                    deadline: project.deadline,
+                    deadline,
                     open: project.open,
                     responsible,
                     team
