@@ -13,96 +13,111 @@
                     :model="form"
                     :rules="rules"
                     label-width="150px">
-                    <el-form-item
-                        label="Name"
-                        prop="name">
-                        <el-input
-                            v-model="form.name"
-                            :maxlength="100"></el-input>
-                    </el-form-item>
-                    <el-form-item
-                        label="Deadline"
-                        prop="deadline">
-                        <el-date-picker
-                            v-model="form.deadline"
-                            :picker-options="deadlineOptions"
-                            type="date"
-                            placeholder="Pick a date"
-                            format="dd.MM.yyyy"
-                            value-format="yyyy-MM-dd">
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item
-                        label="Opened"
-                        prop="open">
-                        <el-switch v-model="form.open"></el-switch>
-                    </el-form-item>
-                    <el-form-item
-                        label="Responsible person"
-                        prop="responsibleUserId">
-                        <el-select
-                            v-model="form.responsibleUserId"
-                            clearable
-                            placeholder="Select a person">
-                            <el-option
-                                v-for="user in users"
-                                :key="user.id"
-                                :label="user.name"
-                                :value="user.id">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item
-                        label="Team members"
-                        prop="members">
-                        <b-row
-                            v-for="(member, index) in form.members"
-                            :key="index"
-                            class="mb-2">
-                            <b-col cols="4">
+                    <el-tabs tab-position="left">
+                        <el-tab-pane label="Project details">
+                            <el-form-item
+                                label="Name"
+                                prop="name">
+                                <el-input
+                                    v-model="form.name"
+                                    :maxlength="100"></el-input>
+                            </el-form-item>
+                            <el-form-item
+                                label="Deadline"
+                                prop="deadline">
+                                <el-date-picker
+                                    v-model="form.deadline"
+                                    :picker-options="deadlineOptions"
+                                    type="date"
+                                    placeholder="Pick a date"
+                                    format="dd.MM.yyyy"
+                                    value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item
+                                label="Opened"
+                                prop="open">
+                                <el-switch v-model="form.open"></el-switch>
+                            </el-form-item>
+                            <el-form-item
+                                label="Responsible person"
+                                prop="responsibleUserId">
                                 <el-select
-                                    v-model="member.userId"
+                                    v-model="form.responsibleUserId"
                                     clearable
-                                    placeholder="Select a person"
-                                    @clear="handlePersonClear(index)">
+                                    placeholder="Select a person">
                                     <el-option
-                                        v-for="user in userSelectOptions"
+                                        v-for="user in users"
                                         :key="user.id"
                                         :label="user.name"
-                                        :value="user.id"
-                                        :disabled="user.disabled">
+                                        :value="user.id">
                                     </el-option>
                                 </el-select>
-                            </b-col>
-                            <b-col cols="8">
-                                <el-select
-                                    v-if="member.userId !== undefined && member.userId !== ''"
-                                    v-model="member.roleIds"
-                                    class="roleSelect"
-                                    multiple
-                                    placeholder="Select roles">
-                                    <el-option
-                                        v-for="role in roles"
-                                        :key="role.id"
-                                        :label="role.name"
-                                        :value="role.id">
-                                    </el-option>
-                                </el-select>
-                            </b-col>
-                        </b-row>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button
-                            v-if="form.members.length < users.length"
-                            type="primary"
-                            plain
-                            @click="addNewRow">
-                            Add member
-                        </el-button>
-                        <el-button
-                            type="primary"
-                            @click="handleSubmit">Submit</el-button>
-                    </el-form-item>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button
+                                    type="primary"
+                                    @click="handleSubmit">Submit</el-button>
+                            </el-form-item>
+                        </el-tab-pane>
+                        <el-tab-pane>
+                            <el-badge
+                                slot="label"
+                                :hidden="isTeamMembersBadgeHidden"
+                                class="error-badge"
+                                value="error">
+                                Team members
+                            </el-badge>
+                            <el-form-item
+                                label="Team members"
+                                prop="members">
+                                <b-row
+                                    v-for="(member, index) in form.members"
+                                    :key="index"
+                                    class="mb-2">
+                                    <b-col cols="4">
+                                        <el-select
+                                            v-model="member.userId"
+                                            clearable
+                                            placeholder="Select a person"
+                                            @clear="handlePersonClear(index)">
+                                            <el-option
+                                                v-for="user in userSelectOptions"
+                                                :key="user.id"
+                                                :label="user.name"
+                                                :value="user.id"
+                                                :disabled="user.disabled">
+                                            </el-option>
+                                        </el-select>
+                                    </b-col>
+                                    <b-col cols="8">
+                                        <el-select
+                                            v-if="member.userId !== undefined && member.userId !== ''"
+                                            v-model="member.roleIds"
+                                            class="roleSelect"
+                                            multiple
+                                            placeholder="Select roles">
+                                            <el-option
+                                                v-for="role in roles"
+                                                :key="role.id"
+                                                :label="role.name"
+                                                :value="role.id">
+                                            </el-option>
+                                        </el-select>
+                                    </b-col>
+                                </b-row>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button
+                                    v-if="form.members.length < users.length"
+                                    type="primary"
+                                    plain
+                                    @click="addNewRow">
+                                    Add member
+                                </el-button>
+                            </el-form-item>
+                        </el-tab-pane>
+                    </el-tabs>
                 </el-form>
             </b-col>
         </b-row>
@@ -152,6 +167,7 @@
                         }
                     ]
                 },
+                isTeamMembersBadgeHidden: true,
                 deadlineOptions: {
                     disabledDate(time) {
                         const yesterday = moment().subtract(1, 'days').valueOf();
@@ -195,28 +211,19 @@
                     members: [
                         {
                             validator: (rule, value, callback) => {
-                                // if at least one user is valid, return ok
+                                let error = false;
                                 value.forEach((member) => {
-                                    if (member.userId !== '' && member.roleIds.length > 0) {
-                                        return callback();
+                                    if (member.userId !== '' && member.roleIds.length === 0) {
+                                        error = true;
                                     }
                                 });
-                                callback(new Error(rule.message));
-                            },
-                            required: true,
-                            message: 'Please select at least one team member',
-                            trigger: 'change'
-                        },
-                        {
-                            validator: (rule, value, callback) => {
-                                value.forEach((member) => {
-                                    if (member.userId === '' || member.roleIds.length === 0) {
-                                        return callback(new Error(rule.message));
-                                    }
-                                });
+                                if (error) {
+                                    this.isTeamMembersBadgeHidden = false;
+                                    return callback(new Error(rule.message));
+                                }
+                                this.isTeamMembersBadgeHidden = true;
                                 callback();
                             },
-                            required: true,
                             message: 'Make sure all selected members have at least 1 role',
                             trigger: 'change'
                         }
@@ -338,4 +345,7 @@
         width: 100%
     .el-form
         margin-top: 20px
+    .error-badge /deep/ sup
+        right: 25px
+        top: 5px
 </style>
