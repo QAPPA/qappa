@@ -10,7 +10,7 @@ const projectCreateSchema = {
         roleIds: Joi.array().items(
             Joi.number().min(0)
         ).min(1).unique().required()
-    }).min(1).unique('userId').required()
+    }).unique('userId').required()
 };
 
 const projectEditSchema = {

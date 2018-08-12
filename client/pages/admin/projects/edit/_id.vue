@@ -280,7 +280,12 @@
             data.form.deadline = projectResponse.deadline;
             data.form.open = projectResponse.open;
             data.form.responsibleUserId = projectResponse.responsibleUserId;
-            data.form.members = projectResponse.members;
+            data.form.members = (projectResponse.members.length > 0) ?
+                projectResponse.members :
+                [{
+                    userId: '',
+                    roleIds: []
+                }];
             return data;
         },
         methods: {
@@ -312,12 +317,13 @@
                     if (!valid) {
                         return;
                     }
+                    const filtered = this.form.members.filter(member => member.userId !== '' && member.roleIds.length > 0);
                     this.$axios.$put(`/projects/${this.form.id}`, {
                         name: this.form.name,
                         deadline: this.form.deadline,
                         open: this.form.open,
                         responsibleUserId: this.form.responsibleUserId,
-                        members: this.form.members
+                        members: filtered
                     }).then((response) => {
                         this.$router.push('/admin/projects');
                         this.$notify({

@@ -53,14 +53,16 @@ router.get('/', admin, async (req: Request, res: Response) => {
         const deadline = project.deadline;
         const open = project.open;
         const responsibleUser = _.pick(project.responsibleUser, ['id', 'name', 'surname']);
-        const members = project.users.map((projectUser) => {
-            const user = _.pick(projectUser.user, ['id', 'name', 'surname']);
-            const roles = projectUser.roles.map(role => _.pick(role, ['id', 'name']));
-            return {
-                user,
-                roles
-            };
-        });
+        const members = project.users
+            .filter(projectUser => projectUser.user !== null && projectUser.roles.length > 0)
+            .map((projectUser) => {
+                const user = _.pick(projectUser.user, ['id', 'name', 'surname']);
+                const roles = projectUser.roles.map(role => _.pick(role, ['id', 'name']));
+                return {
+                    user,
+                    roles
+                };
+            });
         return {
             id,
             name,
@@ -130,11 +132,14 @@ router.get('/:id(\\d+)', admin, async (req: Request, res: Response) => {
         deadline: found.deadline,
         open: found.open,
         responsibleUserId: found.responsibleUser.id,
-        members: found.users.map(projectUser => ({
-            userId: projectUser.user.id,
-            roleIds: projectUser.roles.map(role => role.id)
-        }))
+        members: found.users
+            .filter(projectUser => projectUser.user !== null && projectUser.roles.length > 0)
+            .map(projectUser => ({
+                userId: projectUser.user.id,
+                roleIds: projectUser.roles.map(role => role.id)
+            }))
     };
+    console.log(project);
     return res.status(200).send(project);
 });
 

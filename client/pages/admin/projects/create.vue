@@ -270,11 +270,12 @@ export default {
                 if (!valid) {
                     return;
                 }
+                const filtered = this.form.members.filter(member => member.userId !== '' && member.roleIds.length > 0);
                 this.$axios.$post('/projects', {
                     name: this.form.name,
                     deadline: this.form.deadline,
                     responsibleUserId: this.form.responsibleUserId,
-                    members: this.form.members
+                    members: filtered
                 }).then((response) => {
                     this.$router.push('/admin/projects');
                     this.$notify({
