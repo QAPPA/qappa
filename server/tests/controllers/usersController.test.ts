@@ -91,7 +91,7 @@ describe('POST /users', () => {
             user.email = 'test@qappa.net';
             user.admin = true;
             user.password = await bcrypt.hash('password', 10);
-            await repository.save(user);
+            const saved = await repository.save(user);
 
             const response: Response = await request
                 .post('/users')
@@ -105,7 +105,7 @@ describe('POST /users', () => {
             expect(response.status).toBe(400);
             expect(response.body.message).toMatch(/User with given email already exists/);
 
-            await repository.clear();
+            await repository.delete(saved.id);
         });
     });
     describe('should respond with status code 200 and user in response if request is valid', () => {
@@ -140,7 +140,7 @@ describe('POST /users', () => {
                 email,
                 admin: true
             });
-            await repository.clear();
+            await repository.delete(user.id);
         });
         it('if admin property was specified', async () => {
             const name = 'John';
@@ -174,7 +174,7 @@ describe('POST /users', () => {
                 email,
                 admin: false
             });
-            await repository.clear();
+            await repository.delete(user.id);
         });
     });
 });
@@ -241,6 +241,6 @@ describe('GET /users/me', () => {
             admin: savedUser.admin
         });
 
-        await repository.clear();
+        await repository.delete(savedUser.id);
     });
 });

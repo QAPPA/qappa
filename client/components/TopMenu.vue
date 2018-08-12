@@ -11,17 +11,31 @@
             is-nav>
             <b-navbar-nav>
                 <b-nav-item to="/">Home</b-nav-item>
-                <b-nav-item-dropdown
-                    text="Admin"
-                    right>
-                    <b-dropdown-item to="/admin/list">Show all users</b-dropdown-item>
-                    <b-dropdown-item to="/admin/register">Register new user</b-dropdown-item>
-                </b-nav-item-dropdown>
+                <template v-if="isAdmin">
+                    <b-nav-item-dropdown
+                        text="Projects"
+                        right>
+                        <b-dropdown-item to="/admin/projects">Show all projects</b-dropdown-item>
+                        <b-dropdown-item to="/admin/projects/create">Create new project</b-dropdown-item>
+                    </b-nav-item-dropdown>
+                    <b-nav-item-dropdown
+                        text="Users"
+                        right>
+                        <b-dropdown-item to="/admin/users">Show all users</b-dropdown-item>
+                        <b-dropdown-item to="/admin/users/register">Register new user</b-dropdown-item>
+                    </b-nav-item-dropdown>
+                    <b-nav-item-dropdown
+                        text="Team roles"
+                        right>
+                        <b-dropdown-item to="/admin/roles">Show all roles</b-dropdown-item>
+                        <b-dropdown-item to="/admin/roles/add">Add a new role</b-dropdown-item>
+                    </b-nav-item-dropdown>
+                </template>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-text><strong>Logged user: </strong></b-nav-text>
                 <b-nav-item-dropdown
-                    :text="user"
+                    :text="userFullName"
                     right>
                     <b-dropdown-item href="#">My account</b-dropdown-item>
                     <b-dropdown-item href="#">Settings</b-dropdown-item>
@@ -35,7 +49,10 @@
 <script>
     export default {
         computed: {
-            user() {
+            isAdmin() {
+                return this.$auth.user.admin;
+            },
+            userFullName() {
                 const user = this.$auth.user;
                 return `${user.name} ${user.surname}`;
             }

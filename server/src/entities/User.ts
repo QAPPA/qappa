@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { ProjectUser } from './ProjectUser';
+import { Project } from './Project';
 
 @Entity({ name: 'users' })
 export class User {
@@ -26,4 +28,10 @@ export class User {
 
     @Column({ default: false })
     admin: boolean;
+
+    @OneToMany(type => ProjectUser, projectUser => projectUser.user)
+    projects: ProjectUser[];
+
+    @OneToMany(type => Project, project => project.responsibleUser)
+    responsibleFor: Project[];
 }

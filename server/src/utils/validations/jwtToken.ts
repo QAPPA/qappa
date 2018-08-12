@@ -1,11 +1,7 @@
 import * as Joi from 'joi';
+import { IJwtPayload } from '../types/jwtToken';
 
-interface JWTPayload {
-    id: number;
-    admin: boolean;
-}
-
-export const validate = (payload: any): Joi.ValidationResult<JWTPayload> => {
+export const validate = (payload: any): Joi.ValidationResult<IJwtPayload> => {
     const schema = {
         id: Joi.number().min(0).required(),
         admin: Joi.boolean().required()

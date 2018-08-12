@@ -1,5 +1,5 @@
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Request, Response, Handler, NextFunction } from 'express';
+import { Request, Response, Handler, NextFunction, RequestHandler } from 'express';
 import * as passport from 'passport';
 import * as config from 'config';
 import { validate } from '../utils/validations/jwtToken';
@@ -26,3 +26,12 @@ export function initializePassport(): Handler {
 export function authenticate(req: Request, res: Response, next: NextFunction): any {
     passport.authenticate('jwt', { session: false })(req, res, next);
 }
+
+export function authorize(req: Request, res: Response, next: NextFunction): any {
+    if (!req.user.admin) {
+        return res.status(403).send({ message: 'You do not have the required permission for this action' });
+    }
+    next();
+}
+
+export const admin: RequestHandler[] = [authenticate, authorize];

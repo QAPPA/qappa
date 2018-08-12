@@ -65,9 +65,10 @@ export default {
             title: this.pageTitle
         };
     },
+    middleware: 'admin',
     data() {
         return {
-            pageTitle: 'Register',
+            pageTitle: 'Register new user',
             form: {
                 name: '',
                 surname: '',
@@ -168,7 +169,7 @@ export default {
 };
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
     .el-form
-        margin-top: 40px
+        margin-top: 20px
 </style>
