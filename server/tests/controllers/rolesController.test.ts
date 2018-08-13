@@ -1,51 +1,13 @@
 import { agent, Response, SuperTest, Test } from 'supertest';
 import { getRepository, createConnection, Connection } from 'typeorm';
-import * as jwt from 'jsonwebtoken';
-import * as config from 'config';
 import app from '@server/app';
 import { TeamRole } from '@server/entities/TeamRole';
+import { adminCheck, authorizationHeader, AUTHORIZATION_HEADER_NAME, pathIdCheck } from '../testUtils';
 
 const request: SuperTest<Test> = agent(app);
 
-const getToken = (admin: boolean): string => {
-    return jwt.sign({
-        admin,
-        id: 1
-    }, config.get('jwtSecret'));
-};
-
-const AUTH_HEADER_NAME = 'Authorization';
-const authHeader = (admin: boolean = true): string => `Bearer ${getToken(admin)}`;
-
-const UNAUTHORIZED_MESSAGE_REG = /You do not have the required permission for this action/;
-
-const adminCheck = (method: ('get' | 'post' | 'put' | 'delete'), url: string): any => {
-    const requestMethod = request[method]; // trying to type this statically seems almost impossible or I'm missing it
-
-    it('should respond with 401 if user is not authenticated', async () => {
-        const response: Response = await requestMethod.call(request, url);
-        expect(response.status).toEqual(401);
-    });
-    it('should respond with 403 if user is not an admin', async () => {
-        const response: Response = await requestMethod.call(request, url)
-            .set(AUTH_HEADER_NAME, authHeader(false));
-        expect(response.status).toEqual(403);
-        expect(response.body.message).toMatch(UNAUTHORIZED_MESSAGE_REG);
-    });
-};
-
-const pathIdCheck = (method: ('get' | 'put' | 'delete'), url: string): any => {
-    const requestMethod = request[method];
-
-    it('should respond with status 404 if id is not a number', async () => {
-        const response: Response = await requestMethod.call(request, url)
-            .set(AUTH_HEADER_NAME, authHeader());
-        expect(response.status).toBe(404);
-    });
-};
-
 describe('GET /roles', () => {
-    adminCheck('get', '/roles');
+    adminCheck(request, 'get', '/roles');
     it('should respond with status 200 and array of team roles if request is valid', async () => {
         const connection: Connection = await createConnection();
         const repository = getRepository(TeamRole);
@@ -60,7 +22,7 @@ describe('GET /roles', () => {
 
         const response: Response = await request
             .get('/roles')
-            .set(AUTH_HEADER_NAME, authHeader());
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader());
         expect(response.status).toEqual(200);
         const body = response.body;
         expect(Array.isArray(body)).toBe(true);
@@ -76,12 +38,12 @@ describe('GET /roles', () => {
 });
 
 describe('POST /roles', () => {
-    adminCheck('post', '/roles');
+    adminCheck(request, 'post', '/roles');
     it('should return status 400 if request body is invalid', async () => {
         // uses utils/validations/role to verify request body, which has been tested
         const response: Response = await request
             .post('/roles')
-            .set(AUTH_HEADER_NAME, authHeader())
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader())
             .send({});
         expect(response.status).toEqual(400);
         expect(response.body.message).toMatch(/Name of the role is required/);
@@ -93,7 +55,7 @@ describe('POST /roles', () => {
         const name = 'Developer';
         const response: Response = await request
             .post('/roles')
-            .set(AUTH_HEADER_NAME, authHeader())
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader())
             .send({ name });
         // response verification
         expect(response.status).toBe(201);
@@ -133,12 +95,12 @@ describe('GET /roles/:id', () => {
         }
     });
 
-    adminCheck('get', '/roles/1');
-    pathIdCheck('get', '/roles/abc');
+    adminCheck(request, 'get', '/roles/1');
+    pathIdCheck(request, 'get', '/roles/abc');
     it('should return status 404 if role doesn\'t exist', async () => {
         const response: Response = await request
             .get(`/roles/1`)
-            .set(AUTH_HEADER_NAME, authHeader());
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader());
         expect(response.status).toBe(404);
         expect(response.body.message).toMatch(/Role doesn't exist/);
     });
@@ -151,7 +113,7 @@ describe('GET /roles/:id', () => {
 
         const response: Response = await request
             .get(`/roles/${saved.id}`)
-            .set(AUTH_HEADER_NAME, authHeader());
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader());
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
             id: saved.id,
@@ -182,12 +144,12 @@ describe('PUT /roles/:id', () => {
         }
     });
 
-    adminCheck('put', '/roles/1');
-    pathIdCheck('put', '/roles/abc');
+    adminCheck(request, 'put', '/roles/1');
+    pathIdCheck(request, 'put', '/roles/abc');
     it('should return status 404 if role doesn\'t exist', async () => {
         const response: Response = await request
             .put(`/roles/1`)
-            .set(AUTH_HEADER_NAME, authHeader());
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader());
         expect(response.status).toBe(404);
         expect(response.body.message).toMatch(/Role doesn't exist/);
     });
@@ -200,7 +162,7 @@ describe('PUT /roles/:id', () => {
 
         const response: Response = await request
             .put(`/roles/${saved.id}`)
-            .set(AUTH_HEADER_NAME, authHeader())
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader())
             .send({});
         expect(response.status).toBe(400);
         expect(response.body.message).toMatch(/Name of the role is required/);
@@ -217,7 +179,7 @@ describe('PUT /roles/:id', () => {
         const name = 'Tester';
         const response: Response = await request
             .put(`/roles/${saved.id}`)
-            .set(AUTH_HEADER_NAME, authHeader())
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader())
             .send({ name });
         // response verification
         expect(response.status).toBe(200);
@@ -253,12 +215,12 @@ describe('DELETE /roles/:id', () => {
         }
     });
 
-    adminCheck('delete', '/roles/1');
-    pathIdCheck('delete', '/roles/abc');
+    adminCheck(request, 'delete', '/roles/1');
+    pathIdCheck(request, 'delete', '/roles/abc');
     it('should return status 404 if role doesn\'t exist', async () => {
         const response: Response = await request
             .delete(`/roles/1`)
-            .set(AUTH_HEADER_NAME, authHeader());
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader());
         expect(response.status).toBe(404);
         expect(response.body.message).toMatch(/Role doesn't exist/);
     });
@@ -271,7 +233,7 @@ describe('DELETE /roles/:id', () => {
 
         const response: Response = await request
             .delete(`/roles/${saved.id}`)
-            .set(AUTH_HEADER_NAME, authHeader());
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader());
         expect(response.status).toBe(200);
         expect(response.body.message).toMatch(/Role was deleted successfully/);
         // DB verification

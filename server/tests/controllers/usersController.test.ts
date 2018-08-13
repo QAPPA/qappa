@@ -1,19 +1,14 @@
 import { agent, Response, SuperTest, Test } from 'supertest';
 import { getRepository, createConnection, Connection } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
-import * as config from 'config';
-import * as _ from 'lodash';
 import app from '@server/app';
 import { User } from '@server/entities/User';
+import { authenticateCheck, AUTHORIZATION_HEADER_NAME, authorizationHeader } from '../testUtils';
 
 const request: SuperTest<Test> = agent(app);
 
 describe('GET /users', () => {
-    it('should respond with status 401 if request is not authenticated', async () => {
-        const response: Response = await request.get('/users');
-        expect(response.status).toBe(401);
-    });
+    authenticateCheck(request, 'get', '/users');
 
     it('should respond with status 200 and user array for valid request', async () => {
         const connection: Connection = await createConnection();
@@ -35,10 +30,9 @@ describe('GET /users', () => {
         user2.password = await bcrypt.hash('password', 10);
         await repository.save(user2);
 
-        const token = jwt.sign({ id: 1, admin: true }, config.get('jwtSecret'));
         const response: Response = await request
             .get('/users')
-            .set('Authorization', `Bearer ${token}`);
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader());
         expect(response.status).toBe(200);
         expect(response.body.users).toHaveLength(2);
 
@@ -201,16 +195,12 @@ describe('GET /users/me', () => {
         }
     });
 
-    it('should respond with status 401 if request is not authenticated', async () => {
-        const response: Response = await request.get('/users/me');
-        expect(response.status).toBe(401);
-    });
+    authenticateCheck(request, 'get', '/users/me');
 
     it('should respond with status 400 if request user doesn\'t exist', async () => {
-        const token = jwt.sign({ id: 1, admin: true }, config.get('jwtSecret'));
         const response: Response = await request
             .get('/users/me')
-            .set('Authorization', `Bearer ${token}`);
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader()); // authHeader is defaultly set to id = 1, admin = true, but the user doesn't exist
         expect(response.status).toBe(400);
         expect(response.body.message).toMatch(/Authentication failed/);
     });
@@ -225,10 +215,9 @@ describe('GET /users/me', () => {
         user.password = await bcrypt.hash('password', 10);
         const savedUser = await repository.save(user);
 
-        const token = jwt.sign(_.pick(savedUser, ['id', 'admin']), config.get('jwtSecret'));
         const response: Response = await request
             .get('/users/me')
-            .set('Authorization', `Bearer ${token}`);
+            .set(AUTHORIZATION_HEADER_NAME, authorizationHeader(savedUser.admin, savedUser.id));
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('user');
