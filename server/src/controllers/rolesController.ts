@@ -23,7 +23,8 @@ router.post('/', admin, async (req: Request, res: Response) => {
     const role = new TeamRole();
     role.name = validated.name;
     const saved = await repository.save(role); // can it fail?
-    return res.status(201).send({ ...saved });
+    // TODO: inconsistency, either change all creating methods to 201 Created or this one to 200 OK
+    return res.status(201).send(saved);
 });
 
 // detail
@@ -34,7 +35,7 @@ router.get('/:id(\\d+)', admin, async (req: Request, res: Response) => {
     if (!role) {
         return res.status(404).send({ message: 'Role doesn\'t exist' });
     }
-    res.status(200).send({ ...role });
+    res.status(200).send(role);
 });
 
 // edit
@@ -50,7 +51,7 @@ router.put('/:id(\\d+)', admin, async (req: Request, res: Response) => {
     }
     role.name = validated.name;
     const saved = await repository.save(role);
-    res.status(200).send({ ...saved });
+    res.status(200).send(saved);
 });
 
 // delete
